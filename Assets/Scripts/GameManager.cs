@@ -1,5 +1,6 @@
 using GameSystems.Scene;
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -21,6 +22,12 @@ public class GameManager : MonoBehaviour
     private Rigidbody m_Player1;
     [SerializeField]
     private Rigidbody m_Player2;
+
+    [SerializeField]
+    private PlayerInput m_PlayerInputs1;
+    [SerializeField]
+    private PlayerInput m_PlayerInputs2;
+    private List<PlayerInput> m_ListInputs = new();
 
     [SerializeField]
     private TMP_Text m_scoreTextP1;
@@ -54,6 +61,10 @@ public class GameManager : MonoBehaviour
         }
 
         m_PauseMenu.SwitchToMenu += SwitchToMenu;
+        //m_PauseMenu.ControlsRemaping.AddListener(SetActiveControls);
+        m_ListInputs.Add(m_PlayerInputs1);
+        m_ListInputs.Add(m_PlayerInputs2);
+        m_ListInputs.Add(GetComponent<PlayerInput>());
     }
 
     private void Init(MultiplayerMode mpMode)
@@ -80,19 +91,22 @@ public class GameManager : MonoBehaviour
                 PauseGame();
                 break;
         }
+        
     }
 
     private void PauseGame()
     {
         if (m_PauseMenu.gameObject.activeInHierarchy == true)
         {
-
             m_PauseMenu.ClosePauseMenu();
+            
         }
-        else
+        else if (m_PauseMenu.gameObject.activeInHierarchy == false)
         {
             m_PauseMenu.OpenPauseMenu();
         }
+        
+
     }
 
     private void SetupHotSeat()
@@ -143,4 +157,30 @@ public class GameManager : MonoBehaviour
         SceneChanger.Instance.ChangeScene(SceneMainMenu);
     }
 
+
+    private void SetActiveControls(bool active)
+    {
+        if (active)
+        {
+            foreach (var playerInput in m_ListInputs)
+            {
+                playerInput.enabled = true;
+                playerInput.ActivateInput();
+                playerInput.currentActionMap.Enable();
+                playerInput.actions.Enable();
+
+            }
+        }
+        else
+        {
+            foreach (var playerInput in m_ListInputs)
+            {
+                playerInput.actions.Disable();
+                playerInput.currentActionMap.Disable();
+                playerInput.DeactivateInput();
+                playerInput.enabled = false;
+                
+            }
+        }
+    }
 }

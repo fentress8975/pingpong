@@ -24,22 +24,40 @@ public partial class @PC_Controls : IInputActionCollection2, IDisposable
     ""name"": ""PC_Controls"",
     ""maps"": [
         {
-            ""name"": ""Player1Controls"",
-            ""id"": ""2cadb3de-fb07-44a9-ba0a-971be22204d3"",
+            ""name"": ""Game"",
+            ""id"": ""7670428f-5b33-4e48-bd79-013a4c30b439"",
             ""actions"": [
                 {
-                    ""name"": ""MoveUp"",
+                    ""name"": ""P1MoveUp"",
                     ""type"": ""Button"",
-                    ""id"": ""cc49adab-a915-4219-a357-a6197c1dbc95"",
+                    ""id"": ""96999084-ee8c-426f-886b-b3bfd3bbc71e"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": true
+                    ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""MoveDown"",
+                    ""name"": ""P1MoveDown"",
                     ""type"": ""Button"",
-                    ""id"": ""d6040b87-7554-471c-8d48-fb1e18099b47"",
+                    ""id"": ""9965ae87-e7e8-4e0d-9155-b8718867d091"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""P2MoveUp"",
+                    ""type"": ""Button"",
+                    ""id"": ""910f207a-280a-47dc-92f7-385e907012f5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""P2MoveDown"",
+                    ""type"": ""Button"",
+                    ""id"": ""4b0099f0-5d2e-47fb-937a-ef5d08be7dc1"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -48,7 +66,7 @@ public partial class @PC_Controls : IInputActionCollection2, IDisposable
                 {
                     ""name"": ""OpenMenu"",
                     ""type"": ""Button"",
-                    ""id"": ""454bb66a-fcfb-49cd-a12e-c51df892165c"",
+                    ""id"": ""32ef13c1-5183-426c-863d-6e341d3f6756"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -58,82 +76,56 @@ public partial class @PC_Controls : IInputActionCollection2, IDisposable
             ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""b5909b8c-cadf-4aac-95ec-e1c301027566"",
-                    ""path"": ""<Keyboard>/s"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""MoveDown"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""eef31664-9650-4266-91b3-96856cb7cebb"",
+                    ""id"": ""134894b5-1fbd-4cb0-b538-61596c7a072e"",
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""MoveUp"",
+                    ""action"": ""P1MoveUp"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""d70a79cc-390a-453f-95c5-8394a7592525"",
+                    ""id"": ""572581af-3e3e-46f1-9f4f-ff7591a3d9c8"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""P2MoveDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""418d7a85-e906-45c2-930e-414983f66325"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""P1MoveDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""23f0d91f-c534-4b9a-8d69-ab0c287d3bd6"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""P2MoveUp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ccb16c1b-a1d1-4ccc-8cf2-499f1422738b"",
                     ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""OpenMenu"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                }
-            ]
-        },
-        {
-            ""name"": ""Player2Controls"",
-            ""id"": ""50d2b34b-fc26-4fad-ae78-a82f39ebc6d2"",
-            ""actions"": [
-                {
-                    ""name"": ""MoveUp"",
-                    ""type"": ""Button"",
-                    ""id"": ""8643f727-2d18-458c-ab39-d3815cf2b2e0"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""MoveDown"",
-                    ""type"": ""Button"",
-                    ""id"": ""5790d9b7-71c4-4b54-b3f5-9e7d4b5253b1"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                }
-            ],
-            ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""fe870059-dac8-40a3-a78b-f6858db8b1b1"",
-                    ""path"": ""<Keyboard>/upArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""MoveUp"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""bc54be52-bde9-4af8-8a23-1139944ceaab"",
-                    ""path"": ""<Keyboard>/downArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""MoveDown"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -159,15 +151,13 @@ public partial class @PC_Controls : IInputActionCollection2, IDisposable
         }
     ]
 }");
-        // Player1Controls
-        m_Player1Controls = asset.FindActionMap("Player1Controls", throwIfNotFound: true);
-        m_Player1Controls_MoveUp = m_Player1Controls.FindAction("MoveUp", throwIfNotFound: true);
-        m_Player1Controls_MoveDown = m_Player1Controls.FindAction("MoveDown", throwIfNotFound: true);
-        m_Player1Controls_OpenMenu = m_Player1Controls.FindAction("OpenMenu", throwIfNotFound: true);
-        // Player2Controls
-        m_Player2Controls = asset.FindActionMap("Player2Controls", throwIfNotFound: true);
-        m_Player2Controls_MoveUp = m_Player2Controls.FindAction("MoveUp", throwIfNotFound: true);
-        m_Player2Controls_MoveDown = m_Player2Controls.FindAction("MoveDown", throwIfNotFound: true);
+        // Game
+        m_Game = asset.FindActionMap("Game", throwIfNotFound: true);
+        m_Game_P1MoveUp = m_Game.FindAction("P1MoveUp", throwIfNotFound: true);
+        m_Game_P1MoveDown = m_Game.FindAction("P1MoveDown", throwIfNotFound: true);
+        m_Game_P2MoveUp = m_Game.FindAction("P2MoveUp", throwIfNotFound: true);
+        m_Game_P2MoveDown = m_Game.FindAction("P2MoveDown", throwIfNotFound: true);
+        m_Game_OpenMenu = m_Game.FindAction("OpenMenu", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -224,95 +214,70 @@ public partial class @PC_Controls : IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // Player1Controls
-    private readonly InputActionMap m_Player1Controls;
-    private IPlayer1ControlsActions m_Player1ControlsActionsCallbackInterface;
-    private readonly InputAction m_Player1Controls_MoveUp;
-    private readonly InputAction m_Player1Controls_MoveDown;
-    private readonly InputAction m_Player1Controls_OpenMenu;
-    public struct Player1ControlsActions
+    // Game
+    private readonly InputActionMap m_Game;
+    private IGameActions m_GameActionsCallbackInterface;
+    private readonly InputAction m_Game_P1MoveUp;
+    private readonly InputAction m_Game_P1MoveDown;
+    private readonly InputAction m_Game_P2MoveUp;
+    private readonly InputAction m_Game_P2MoveDown;
+    private readonly InputAction m_Game_OpenMenu;
+    public struct GameActions
     {
         private @PC_Controls m_Wrapper;
-        public Player1ControlsActions(@PC_Controls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @MoveUp => m_Wrapper.m_Player1Controls_MoveUp;
-        public InputAction @MoveDown => m_Wrapper.m_Player1Controls_MoveDown;
-        public InputAction @OpenMenu => m_Wrapper.m_Player1Controls_OpenMenu;
-        public InputActionMap Get() { return m_Wrapper.m_Player1Controls; }
+        public GameActions(@PC_Controls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @P1MoveUp => m_Wrapper.m_Game_P1MoveUp;
+        public InputAction @P1MoveDown => m_Wrapper.m_Game_P1MoveDown;
+        public InputAction @P2MoveUp => m_Wrapper.m_Game_P2MoveUp;
+        public InputAction @P2MoveDown => m_Wrapper.m_Game_P2MoveDown;
+        public InputAction @OpenMenu => m_Wrapper.m_Game_OpenMenu;
+        public InputActionMap Get() { return m_Wrapper.m_Game; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(Player1ControlsActions set) { return set.Get(); }
-        public void SetCallbacks(IPlayer1ControlsActions instance)
+        public static implicit operator InputActionMap(GameActions set) { return set.Get(); }
+        public void SetCallbacks(IGameActions instance)
         {
-            if (m_Wrapper.m_Player1ControlsActionsCallbackInterface != null)
+            if (m_Wrapper.m_GameActionsCallbackInterface != null)
             {
-                @MoveUp.started -= m_Wrapper.m_Player1ControlsActionsCallbackInterface.OnMoveUp;
-                @MoveUp.performed -= m_Wrapper.m_Player1ControlsActionsCallbackInterface.OnMoveUp;
-                @MoveUp.canceled -= m_Wrapper.m_Player1ControlsActionsCallbackInterface.OnMoveUp;
-                @MoveDown.started -= m_Wrapper.m_Player1ControlsActionsCallbackInterface.OnMoveDown;
-                @MoveDown.performed -= m_Wrapper.m_Player1ControlsActionsCallbackInterface.OnMoveDown;
-                @MoveDown.canceled -= m_Wrapper.m_Player1ControlsActionsCallbackInterface.OnMoveDown;
-                @OpenMenu.started -= m_Wrapper.m_Player1ControlsActionsCallbackInterface.OnOpenMenu;
-                @OpenMenu.performed -= m_Wrapper.m_Player1ControlsActionsCallbackInterface.OnOpenMenu;
-                @OpenMenu.canceled -= m_Wrapper.m_Player1ControlsActionsCallbackInterface.OnOpenMenu;
+                @P1MoveUp.started -= m_Wrapper.m_GameActionsCallbackInterface.OnP1MoveUp;
+                @P1MoveUp.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnP1MoveUp;
+                @P1MoveUp.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnP1MoveUp;
+                @P1MoveDown.started -= m_Wrapper.m_GameActionsCallbackInterface.OnP1MoveDown;
+                @P1MoveDown.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnP1MoveDown;
+                @P1MoveDown.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnP1MoveDown;
+                @P2MoveUp.started -= m_Wrapper.m_GameActionsCallbackInterface.OnP2MoveUp;
+                @P2MoveUp.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnP2MoveUp;
+                @P2MoveUp.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnP2MoveUp;
+                @P2MoveDown.started -= m_Wrapper.m_GameActionsCallbackInterface.OnP2MoveDown;
+                @P2MoveDown.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnP2MoveDown;
+                @P2MoveDown.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnP2MoveDown;
+                @OpenMenu.started -= m_Wrapper.m_GameActionsCallbackInterface.OnOpenMenu;
+                @OpenMenu.performed -= m_Wrapper.m_GameActionsCallbackInterface.OnOpenMenu;
+                @OpenMenu.canceled -= m_Wrapper.m_GameActionsCallbackInterface.OnOpenMenu;
             }
-            m_Wrapper.m_Player1ControlsActionsCallbackInterface = instance;
+            m_Wrapper.m_GameActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @MoveUp.started += instance.OnMoveUp;
-                @MoveUp.performed += instance.OnMoveUp;
-                @MoveUp.canceled += instance.OnMoveUp;
-                @MoveDown.started += instance.OnMoveDown;
-                @MoveDown.performed += instance.OnMoveDown;
-                @MoveDown.canceled += instance.OnMoveDown;
+                @P1MoveUp.started += instance.OnP1MoveUp;
+                @P1MoveUp.performed += instance.OnP1MoveUp;
+                @P1MoveUp.canceled += instance.OnP1MoveUp;
+                @P1MoveDown.started += instance.OnP1MoveDown;
+                @P1MoveDown.performed += instance.OnP1MoveDown;
+                @P1MoveDown.canceled += instance.OnP1MoveDown;
+                @P2MoveUp.started += instance.OnP2MoveUp;
+                @P2MoveUp.performed += instance.OnP2MoveUp;
+                @P2MoveUp.canceled += instance.OnP2MoveUp;
+                @P2MoveDown.started += instance.OnP2MoveDown;
+                @P2MoveDown.performed += instance.OnP2MoveDown;
+                @P2MoveDown.canceled += instance.OnP2MoveDown;
                 @OpenMenu.started += instance.OnOpenMenu;
                 @OpenMenu.performed += instance.OnOpenMenu;
                 @OpenMenu.canceled += instance.OnOpenMenu;
             }
         }
     }
-    public Player1ControlsActions @Player1Controls => new Player1ControlsActions(this);
-
-    // Player2Controls
-    private readonly InputActionMap m_Player2Controls;
-    private IPlayer2ControlsActions m_Player2ControlsActionsCallbackInterface;
-    private readonly InputAction m_Player2Controls_MoveUp;
-    private readonly InputAction m_Player2Controls_MoveDown;
-    public struct Player2ControlsActions
-    {
-        private @PC_Controls m_Wrapper;
-        public Player2ControlsActions(@PC_Controls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @MoveUp => m_Wrapper.m_Player2Controls_MoveUp;
-        public InputAction @MoveDown => m_Wrapper.m_Player2Controls_MoveDown;
-        public InputActionMap Get() { return m_Wrapper.m_Player2Controls; }
-        public void Enable() { Get().Enable(); }
-        public void Disable() { Get().Disable(); }
-        public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(Player2ControlsActions set) { return set.Get(); }
-        public void SetCallbacks(IPlayer2ControlsActions instance)
-        {
-            if (m_Wrapper.m_Player2ControlsActionsCallbackInterface != null)
-            {
-                @MoveUp.started -= m_Wrapper.m_Player2ControlsActionsCallbackInterface.OnMoveUp;
-                @MoveUp.performed -= m_Wrapper.m_Player2ControlsActionsCallbackInterface.OnMoveUp;
-                @MoveUp.canceled -= m_Wrapper.m_Player2ControlsActionsCallbackInterface.OnMoveUp;
-                @MoveDown.started -= m_Wrapper.m_Player2ControlsActionsCallbackInterface.OnMoveDown;
-                @MoveDown.performed -= m_Wrapper.m_Player2ControlsActionsCallbackInterface.OnMoveDown;
-                @MoveDown.canceled -= m_Wrapper.m_Player2ControlsActionsCallbackInterface.OnMoveDown;
-            }
-            m_Wrapper.m_Player2ControlsActionsCallbackInterface = instance;
-            if (instance != null)
-            {
-                @MoveUp.started += instance.OnMoveUp;
-                @MoveUp.performed += instance.OnMoveUp;
-                @MoveUp.canceled += instance.OnMoveUp;
-                @MoveDown.started += instance.OnMoveDown;
-                @MoveDown.performed += instance.OnMoveDown;
-                @MoveDown.canceled += instance.OnMoveDown;
-            }
-        }
-    }
-    public Player2ControlsActions @Player2Controls => new Player2ControlsActions(this);
+    public GameActions @Game => new GameActions(this);
     private int m_PCSchemeIndex = -1;
     public InputControlScheme PCScheme
     {
@@ -322,15 +287,12 @@ public partial class @PC_Controls : IInputActionCollection2, IDisposable
             return asset.controlSchemes[m_PCSchemeIndex];
         }
     }
-    public interface IPlayer1ControlsActions
+    public interface IGameActions
     {
-        void OnMoveUp(InputAction.CallbackContext context);
-        void OnMoveDown(InputAction.CallbackContext context);
+        void OnP1MoveUp(InputAction.CallbackContext context);
+        void OnP1MoveDown(InputAction.CallbackContext context);
+        void OnP2MoveUp(InputAction.CallbackContext context);
+        void OnP2MoveDown(InputAction.CallbackContext context);
         void OnOpenMenu(InputAction.CallbackContext context);
-    }
-    public interface IPlayer2ControlsActions
-    {
-        void OnMoveUp(InputAction.CallbackContext context);
-        void OnMoveDown(InputAction.CallbackContext context);
     }
 }

@@ -85,3 +85,10 @@ public class PlayerControls : MonoBehaviour
         Move();
     }
 }
+
+public enum BarMovementDirection
+{
+    UP,
+    DOWN,
+    STOP
+}
