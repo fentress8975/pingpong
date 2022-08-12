@@ -31,13 +31,11 @@ public class PauseMenu : MonoBehaviour
 
     public void OpenPauseMenu()
     {
-        PauseGame();
         EnablePauseMenu();
     }
 
     public void ClosePauseMenu()
     {
-        PauseGame();
         DisablePauseMenu();
     }
 
@@ -51,18 +49,6 @@ public class PauseMenu : MonoBehaviour
     {
         gameObject.SetActive(false);
         Debug.Log("kokoff");
-    }
-
-    private void PauseGame()
-    {
-        if(Time.timeScale == 1)
-        {
-        Time.timeScale = 0;
-        }
-        else if(Time.timeScale == 0)
-        {
-            Time.timeScale = 1;
-        }
     }
 
     private void SwitchSceneToMenu()
