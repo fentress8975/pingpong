@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelBuilder : MonoBehaviour
@@ -16,56 +14,108 @@ public class LevelBuilder : MonoBehaviour
     [SerializeField]
     private GameObject m_NetPrefab;
 
-    public PlayerNet Player1Net
-    {
-        get;
-        private set;
-    }
-    public PlayerNet Player2Net
-    {
-        get;
-        private set;
-    }
-
-    private List<Rigidbody> m_Players;
     private GameLevelSettings m_LevelSettings;
 
-    public List<Rigidbody> BuildLevel()
+    private void Awake()
+    {
+        LoadResources();
+    }
+
+    private void LoadResources()
+    {
+        m_PlayerPrefab = Resources.Load<GameObject>("Prefabs/Player");
+        m_RedSide = Resources.Load<Material>("Materials/Player1");
+        m_BlueSide = Resources.Load<Material>("Materials/Player2");
+        m_BallPrefab = Resources.Load<GameObject>("Prefabs/Ball");
+        m_NetPrefab = Resources.Load<GameObject>("Prefabs/Net");
+    }
+
+    public void BuildLevel(out PlayerControls player1, out PlayerControls player2, out Ball ball, out PlayerNet playerNet1, out PlayerNet playerNet2)
     {
         m_LevelSettings = FindObjectOfType<GameLevelSettings>();
-
-        SpawnNet();
-        SpawnPlayers();
-        SpawnBall();
-
-        return m_Players;
+        SpawnPlayers(out player1, out player2);
+        SpawnBall(out ball);
+        SpawnNet(out playerNet1, out playerNet2);
     }
 
-    private void SpawnNet()
+    public void BuildHotSeatlevel(PlayerControls player1, PlayerControls player2, out Ball ball, out PlayerNet playerNet1, out PlayerNet playerNet2)
     {
-        Player1Net = Instantiate(m_NetPrefab).GetComponent<PlayerNet>();
-        Player2Net = Instantiate(m_NetPrefab).GetComponent<PlayerNet>();
-        Player1Net.transform.position = m_LevelSettings.P1NetSpawnPos.position;
-        Player2Net.transform.position = m_LevelSettings.P2SpawnPos.position;
+        m_LevelSettings = FindObjectOfType<GameLevelSettings>();
+        SpawnHotSeatPlayers(player1, player2);
+        SpawnBall(out ball);
+        SpawnNet(out playerNet1, out playerNet2);
     }
 
-    private void SpawnBall()
+
+    private void SpawnNet(out PlayerNet p1Net, out PlayerNet p2Net)
     {
-        Instantiate(m_BallPrefab,m_LevelSettings.BallSpawnPos);
+        GameObject player1net = Instantiate(m_NetPrefab);
+        GameObject player2net = Instantiate(m_NetPrefab);
+
+        player1net.transform.position = m_LevelSettings.P1NetSpawnPos.position;
+        player2net.transform.position = m_LevelSettings.P2NetSpawnPos.position;
+        player1net.transform.rotation = m_LevelSettings.P1NetSpawnPos.rotation;
+        player2net.transform.rotation = m_LevelSettings.P2NetSpawnPos.rotation;
+
+        PlayerNet Player1Net = player1net.GetComponent<PlayerNet>();
+        PlayerNet Player2Net = player2net.GetComponent<PlayerNet>();
+
+        Player1Net.ChangeTeam(BorderTeam.player1);
+        Player2Net.ChangeTeam(BorderTeam.player2);
+
+        p1Net = Player1Net;
+        p2Net = Player2Net;
+
     }
 
-    private void SpawnPlayers()
+    private void SpawnBall(out Ball ball)
+    {
+        GameObject BallGO = Instantiate(m_BallPrefab);
+        BallGO.transform.position = m_LevelSettings.BallSpawnPos.position;
+        ball = BallGO.GetComponent<Ball>();
+    }
+
+    private void SpawnPlayers(out PlayerControls p1, out PlayerControls p2)
     {
         GameObject player1 = Instantiate(m_PlayerPrefab);
         GameObject player2 = Instantiate(m_PlayerPrefab);
+        SetPlayerName(player1, player2);
+        SetPlayerMaterials(player1, player2);
+        SetPlayerPosition(player1, player2);
 
-        player1.GetComponent<Material>().CopyPropertiesFromMaterial(m_RedSide);
-        player2.GetComponent<Material>().CopyPropertiesFromMaterial(m_BlueSide);
+        p1 = player1.GetComponent<PlayerControls>();
+        p2 = player2.GetComponent<PlayerControls>();
+    }
 
+    private static void SetPlayerName(GameObject player1, GameObject player2)
+    {
+        player1.name = "Player1";
+        player2.name = "Player2";
+    }
+
+    private void SetPlayerPosition(GameObject player1, GameObject player2)
+    {
         player1.transform.position = m_LevelSettings.P1SpawnPos.position;
-        player2.transform.position = m_LevelSettings.P2SpawnPos.position;
+        player1.transform.rotation = m_LevelSettings.P1SpawnPos.rotation;
 
-        m_Players.Add(player1.GetComponent<Rigidbody>());
-        m_Players.Add(player2.GetComponent<Rigidbody>());
+        player2.transform.position = m_LevelSettings.P2SpawnPos.position;
+        player2.transform.rotation = m_LevelSettings.P2SpawnPos.rotation;
+    }
+
+    private void SetPlayerMaterials(GameObject player1, GameObject player2)
+    {
+        var meshP1 = player1.GetComponent<MeshRenderer>();
+        var meshP2 = player2.GetComponent<MeshRenderer>();
+        meshP1.material = m_RedSide;
+        meshP2.material = m_BlueSide;
+    }
+
+    private void SpawnHotSeatPlayers(PlayerControls player1, PlayerControls player2)
+    {
+        GameObject p1 = player1.gameObject;
+        GameObject p2 = player2.gameObject;
+        SetPlayerName(p1, p2);
+        SetPlayerMaterials(p1, p2);
+        SetPlayerPosition(p1, p2);
     }
 }

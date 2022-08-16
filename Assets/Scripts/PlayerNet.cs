@@ -15,13 +15,17 @@ public class PlayerNet : MonoBehaviour
     {
         if (m_Team != BorderTeam.none)
         {
-            if (other.TryGetComponent<Ball>(out Ball ball))
+            if (other.TryGetComponent(out Ball ball))
             {
                 GoalEvent.Invoke(m_Team);
             }
         }
     }
 
+    public void ChangeTeam(BorderTeam team)
+    {
+        m_Team = team;
+    }
     
 }
 

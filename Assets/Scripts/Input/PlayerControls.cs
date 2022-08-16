@@ -1,10 +1,11 @@
-using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Interactions;
 
 public class PlayerControls : MonoBehaviour
 {
+    public UnityEvent OnOpenMenu;
+
     private Rigidbody m_Player;
 
     private float m_fSpeed = 6f;
@@ -18,7 +19,7 @@ public class PlayerControls : MonoBehaviour
         m_Player = GetComponent<Rigidbody>();
     }
 
-    public void OnMoveUp(InputAction.CallbackContext context)
+    public void MoveUp(InputAction.CallbackContext context)
     {
         switch (context.phase)
         {
@@ -32,7 +33,7 @@ public class PlayerControls : MonoBehaviour
         }
     }
 
-    public void OnMoveDown(InputAction.CallbackContext context)
+    public void MoveDown(InputAction.CallbackContext context)
     {
         switch (context.phase)
         {
@@ -44,7 +45,16 @@ public class PlayerControls : MonoBehaviour
                 m_IsMovingDown = false;
                 break;
         }
-        
+    }
+
+    public void OpenMenu(InputAction.CallbackContext context)
+    {
+        switch (context.phase)
+        {
+            case InputActionPhase.Started:
+                OnOpenMenu?.Invoke();
+                break;
+        }
     }
 
     private void Move()
@@ -80,7 +90,7 @@ public class PlayerControls : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         Move();
     }

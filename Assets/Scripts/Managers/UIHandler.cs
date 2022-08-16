@@ -1,26 +1,34 @@
+using GameSystems.Scene;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class UIHandler : SingletonMonoPersistent<UIHandler>
 {
+    public UnityEvent<bool> OnControlsRebinding;
+    private Action OnSwitchSceneToMenu;
+
     [SerializeField]
     private GameObject m_PrefabMenuPanel;
     [SerializeField]
-    private GameObject m_PrefabGamePausePanel;
-    [SerializeField]
-    private GameObject m_PrefabScorePanel;
+    private GameObject m_PrefabGameUI;
 
+    private GameObject m_GameUI;
     private GameObject m_MenuPanel;
-    private GameObject m_GamePausePanel;
-    private GameObject m_ScorePanel;
+    private PauseMenu m_GamePausePanel;
+    private MainMenu m_MainMenu;
+    private PlayersScoreHandler m_ScorePanel;
     private PlayersScoreHandler m_ScoreHandler;
 
     private List<GameObject> m_ListActiveUi = new();
 
     private StateUI m_StateUI = StateUI.MainMenu;
 
+    private void Start()
+    {
+        OnSwitchSceneToMenu = BuildUI;
+    }
 
     public void Init(GameState stateUI)
     {
@@ -33,12 +41,13 @@ public class UIHandler : SingletonMonoPersistent<UIHandler>
                 BuildGameMenu();
                 break;
         }
+        
     }
 
     private void StartGame(MultiplayerMode mpMode, string levelName)
     {
         Debug.Log("Ui want Start Game");
-        GameManager.Instance.InitGame(mpMode, levelName);
+        GameManager.Instance.ChangeGameLevel(mpMode, levelName);
     }
 
     private void BuildUI()
@@ -47,10 +56,10 @@ public class UIHandler : SingletonMonoPersistent<UIHandler>
         switch (m_StateUI)
         {
             case StateUI.MainMenu:
-                BuildGameMenu();
+                BuildMainMenu();
                 break;
             case StateUI.Game:
-                BuildMainMenu();
+                BuildGameMenu();
                 break;
         }
     }
@@ -112,53 +121,63 @@ public class UIHandler : SingletonMonoPersistent<UIHandler>
 
     private void BuildMainMenu()
     {
-        m_MenuPanel = FindObjectOfType<MainMenu>().gameObject;
+        Debug.Log("UI Build MainMenu");
+        m_MainMenu = FindObjectOfType<MainMenu>();
 
-        if (m_MenuPanel == null)
+        if (m_MainMenu == null)
         {
-            m_MenuPanel = Instantiate(m_MenuPanel);
+            m_MenuPanel = Instantiate(m_PrefabMenuPanel);
+            m_MainMenu = m_MenuPanel.GetComponent<MainMenu>();
             m_ListActiveUi.Add(m_MenuPanel);
         }
 
-        m_MenuPanel.GetComponent<MainMenu>().StartGameEvent.AddListener(StartGame);
+        m_MainMenu.StartGameEvent.AddListener(StartGame);
     }
 
     private void BuildGameMenu()
     {
-        m_GamePausePanel = FindObjectOfType<PauseMenu>().gameObject;
-        m_ScorePanel = FindObjectOfType<PlayersScoreHandler>().gameObject;
+        m_GameUI = Instantiate(m_PrefabGameUI);
+        m_GamePausePanel = m_GameUI.GetComponentInChildren<PauseMenu>();
+        m_GamePausePanel.SwitchToMenu.AddListener(OpenMainMenu);
 
-        if(m_GamePausePanel == null)
-        {
-            m_GamePausePanel = Instantiate(m_MenuPanel);
-            m_GamePausePanel.SetActive(false);
-        }
-        if (m_ScorePanel == null)
-        {
-            m_ScorePanel = Instantiate(m_PrefabScorePanel);
-            m_ScorePanel.SetActive(true);
-            m_ScoreHandler = m_ScorePanel.GetComponent<PlayersScoreHandler>();
-        }
-        m_ListActiveUi.Add(m_GamePausePanel);
-        m_ListActiveUi.Add(m_ScorePanel);
+        m_ScorePanel = m_GameUI.GetComponentInChildren<PlayersScoreHandler>();
+        m_ScorePanel.gameObject.SetActive(true);
+        m_ScoreHandler = m_ScorePanel.GetComponent<PlayersScoreHandler>();
+
+        m_ListActiveUi.Add(m_GameUI);
+    }
+
+    private void OpenMainMenu()
+    {
+        Debug.Log("Trying Switch to main menu");
+        m_StateUI = StateUI.MainMenu;
+        StartCoroutine(SceneChanger.Instance.ChangeScene(SceneChanger.SceneMainMenu,OnSwitchSceneToMenu));
     }
 
     public void SetActivePauseMenu(bool active)
     {
         switch (m_StateUI)
         {
-            case StateUI.MainMenu:
-                m_GamePausePanel.SetActive(active);
-                break;
             case StateUI.Game:
-                throw new NotImplementedException($"Not Allowed Open Pause Menu in {m_StateUI} state!");
+                if (active)
+                {
+                    m_GamePausePanel.OpenPauseMenu();
+                }
+                else
+                {
+                    m_GamePausePanel.ClosePauseMenu();
+                }
+                
+                break;
+            case StateUI.MainMenu:
+                throw new NotImplementedException($"Not Allowed Open Game Pause Menu in {m_StateUI} state!");
                 break;
         }
     }
 
     public void UpdateScore(int player1Score, int player2Score)
     {
-        if(m_StateUI == StateUI.MainMenu)
+        if (m_StateUI == StateUI.MainMenu)
         {
             throw new NotImplementedException($"Not Allowed to change Players Score in {m_StateUI} state!");
         }

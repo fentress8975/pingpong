@@ -54,6 +54,7 @@ public class MainMenu : MonoBehaviour
 
     private void StartHotSeatGame()
     {
+        Debug.Log("Starting HotSeat Game");
         StartGameEvent?.Invoke(MultiplayerMode.HOTSEAT, m_LevelChoose.captionText.text);
     }
 

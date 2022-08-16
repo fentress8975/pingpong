@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,9 +6,7 @@ using UnityEngine.UI;
 public class PauseMenu : MonoBehaviour
 {
     public UnityEvent<bool> ControlsRemaping;
-
-    public delegate void SwitchSceneHandler();
-    public event SwitchSceneHandler SwitchToMenu;
+    public UnityEvent SwitchToMenu;
 
     [SerializeField]
     private RebindOverlay m_RebindOverlay;
@@ -20,9 +15,8 @@ public class PauseMenu : MonoBehaviour
     [SerializeField]
     private Button m_BackToMenu;
 
-    private void Start()
+    private void Awake()
     {
-        DisablePauseMenu();
         m_ExitGame.onClick.AddListener(ExitGame);
         m_BackToMenu.onClick.AddListener(SwitchSceneToMenu);
 
@@ -42,22 +36,24 @@ public class PauseMenu : MonoBehaviour
     private void EnablePauseMenu()
     {
         gameObject.SetActive(true);
-        Debug.Log("kokon");
+        Debug.Log("PauseMenuOn");
     }
 
     private void DisablePauseMenu()
     {
         gameObject.SetActive(false);
-        Debug.Log("kokoff");
+        Debug.Log("PauseMenuOff");
     }
 
     private void SwitchSceneToMenu()
     {
+        Debug.Log("Goint To MainMenu");
         SwitchToMenu?.Invoke();
     }
 
-    private void RemapingControls(bool isRemaping)
+    public void RemapingControls(bool isRemaping)
     {
+        Debug.Log("Remaping");
         ControlsRemaping?.Invoke(!isRemaping);
     }
 

@@ -1,8 +1,5 @@
 using GameSystems.Scene;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 public class GameSystemManager : SingletonMonoPersistent<GameSystemManager>
 {
@@ -20,7 +17,7 @@ public class GameSystemManager : SingletonMonoPersistent<GameSystemManager>
         }
     }
 
-    void Start()
+    private void Start()
     {
         m_GameManager = GetComponentInChildren<GameManager>();
         m_UIHandler = GetComponentInChildren<UIHandler>();
@@ -42,25 +39,33 @@ public class GameSystemManager : SingletonMonoPersistent<GameSystemManager>
 
     public void SwitchGameState(GameState state)
     {
-        switch (state)
-        {
-            case GameState.MainMenu:
-                StartMenuScene();
-                break;
-            case GameState.Active:
-                StartGameScene();
-                break;
-            case GameState.Pause:
-                SetGamePause();
-                break;
-        }
         m_GameState = state;
         UpdateSystems();
+
+        switch (m_GameState)
+        {
+            case GameState.MainMenu:
+                break;
+            case GameState.Active:
+                SetGamePause(false);
+                break;
+            case GameState.Pause:
+                SetGamePause(true);
+                break;
+        }
     }
 
-    private void SetGamePause()
+    private void SetGamePause(bool pause)
     {
-        throw new NotImplementedException();
+        if (pause)
+        {
+            GameTimeControl.Pause();
+        }
+        else
+        {
+            GameTimeControl.UnPause();
+        }
+
     }
 
     private void StartGameScene()

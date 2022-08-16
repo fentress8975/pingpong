@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine.SceneManagement;
-
-
+using System.Collections;
+using UnityEngine;
 
 namespace GameSystems
 {
@@ -19,17 +19,28 @@ namespace GameSystems
                 m_Scenes = GetSceneList();
             }
 
-            public void ChangeScene(string name)
+            public IEnumerator ChangeScene(string name, Action StartGame)
             {
-                string sceneName = m_Scenes.Find(x => x == name);
+                string sceneName;
+                if(name == SceneMainMenu)
+                {
+                    sceneName = name;
+                }
+                else
+                {
+                    sceneName = m_Scenes.Find(x => x == name);
+                }
+                Debug.Log("Середина загрузки");
                 if (sceneName != null)
                 {
-                    var scene = SceneManager.LoadSceneAsync(sceneName);
-                    scene.allowSceneActivation = false;
+                    var scene = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
 
-                    //SomeCode
-
-                    scene.allowSceneActivation = true;
+                    while (!scene.isDone)
+                    {
+                        yield return null;
+                    }
+                    Debug.Log("Конец загрузки");
+                    StartGame();
                 }
                 else 
                 {
@@ -63,6 +74,7 @@ namespace GameSystems
                 path = path.Remove(indexLast, path.Length - indexLast);
                 return path;
             }
+
         }
     }
 }

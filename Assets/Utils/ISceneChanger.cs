@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace GameSystems
@@ -6,8 +8,8 @@ namespace GameSystems
     {
         public interface ISceneChanger
         {
-            public abstract void ChangeScene(string sceneName);
-            public abstract List<string> GetSceneList();
+            IEnumerator ChangeScene(string sceneName, Action start);
+            abstract List<string> GetSceneList();
         }
     }
 }
