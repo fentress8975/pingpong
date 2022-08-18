@@ -249,6 +249,7 @@ GameObject:
   - component: {fileID: 435887984}
   - component: {fileID: 435887983}
   - component: {fileID: 435887982}
+  - component: {fileID: 435887985}
   m_Layer: 0
   m_Name: Border (1)
   m_TagString: Untagged
@@ -334,6 +335,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 435887979}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &435887985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 435887979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a0a6e5382d468a4b86bf7bcb3a6206d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &500130767
 GameObject:
   m_ObjectHideFlags: 0
@@ -486,6 +499,7 @@ GameObject:
   - component: {fileID: 678589687}
   - component: {fileID: 678589686}
   - component: {fileID: 678589685}
+  - component: {fileID: 678589689}
   m_Layer: 0
   m_Name: Border
   m_TagString: Untagged
@@ -571,6 +585,18 @@ Transform:
   m_Father: {fileID: 722397078}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!114 &678589689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 678589684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a0a6e5382d468a4b86bf7bcb3a6206d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &701290851
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,7 +8,27 @@ using TMPro;
 
 public class MainMenu : MonoBehaviour
 {
-    public UnityEvent<MultiplayerMode, string> StartGameEvent;
+    public UnityEvent<MultiplayerMode, string> OnStartGameEvent;
+    public UnityEvent<string> OnUpdatePlayer1Name;
+    public UnityEvent<string> OnUpdatePlayer2Name;
+
+    public string Player1Name
+    {
+        get => m_Player1Name;
+        private set
+        {
+            m_Player1Name = value;
+        }
+    }
+
+    public string Player2Name
+    {
+        get => m_Player2Name;
+        private set
+        {
+            m_Player2Name = value;
+        }
+    }
 
     [SerializeField]
     private Button m_StartHotSeat;
@@ -23,13 +43,21 @@ public class MainMenu : MonoBehaviour
     private Button m_CloseOptionsButton;
 
     [SerializeField]
+    private TMP_InputField m_Player1InputField;
+    [SerializeField]
+    private TMP_InputField m_Player2InputField;
+    [SerializeField]
+    private string m_Player1Name;
+    [SerializeField]
+    private string m_Player2Name;
+
+    [SerializeField]
     private Button m_CloseAppButton;
     [SerializeField]
     private GameObject m_OptionsMenu;
     [SerializeField]
     private GameObject m_FaceMenu;
 
-    private ISceneChanger m_SceneChanger;
 
     private void SubcribeButtons()
     {
@@ -44,23 +72,24 @@ public class MainMenu : MonoBehaviour
     {
         m_OptionsMenu.SetActive(false);
 
-        m_SceneChanger = (ISceneChanger)SceneChanger.Instance;
-
         SubcribeButtons();
 
         m_LevelChoose.ClearOptions();
         m_LevelChoose.AddOptions(SceneChanger.Instance.GetSceneList());
+        m_Player1InputField.onValueChanged.AddListener(SetPlayer1Name);
+        m_Player2InputField.onValueChanged.AddListener(SetPlayer2Name);
+
     }
 
     private void StartHotSeatGame()
     {
         Debug.Log("Starting HotSeat Game");
-        StartGameEvent?.Invoke(MultiplayerMode.HOTSEAT, m_LevelChoose.captionText.text);
+        OnStartGameEvent?.Invoke(MultiplayerMode.HOTSEAT, m_LevelChoose.captionText.text);
     }
 
     private void StartOnlineGame()
     {
-        StartGameEvent?.Invoke(MultiplayerMode.Online, m_LevelChoose.itemText.text);
+        OnStartGameEvent?.Invoke(MultiplayerMode.Online, m_LevelChoose.itemText.text);
     }
 
     private void OpenOptions()
@@ -77,6 +106,24 @@ public class MainMenu : MonoBehaviour
         }
     }
 
+    public void UpdateNames(string Player1, string Player2)
+    {
+        m_Player1InputField.text = Player1;
+        m_Player2InputField.text = Player2;
+    }
+
+    public void SetPlayer1Name(string name)
+    {
+        m_Player1Name = name;
+        OnUpdatePlayer1Name?.Invoke(m_Player1Name);
+    }
+
+    public void SetPlayer2Name(string name)
+    {
+        m_Player2Name = name;
+        OnUpdatePlayer2Name?.Invoke(m_Player2Name);
+    }
+
     private void CloseApp()
     {
 #if UNITY_EDITOR
@@ -90,6 +137,39 @@ public class MainMenu : MonoBehaviour
         Application.Quit();
 
 #endif
+    }
+
+    private void OnEnable()
+    {
+        Debug.Log("Load player names");
+        string player1Name = PlayerPrefs.GetString("Player1Name");
+        if (player1Name == null)
+        {
+            m_Player1Name = "Player1";
+        }
+        else
+        {
+            m_Player1Name = player1Name;
+        }
+        string player2Name = PlayerPrefs.GetString("Player2Name");
+        if (player2Name == null)
+        {
+            m_Player2Name = "Player2";
+        }
+        else
+        {
+            m_Player2Name = player2Name;
+        }
+        UpdateNames(m_Player1Name, m_Player2Name);
+    }
+
+    private void OnDisable()
+    {
+        Debug.Log("Save player names");
+        string player1Name = m_Player1Name;
+        PlayerPrefs.SetString("Player1Name", player1Name);
+        string player2Name = m_Player2Name;
+        PlayerPrefs.SetString("Player2Name", player2Name);
     }
 }
 

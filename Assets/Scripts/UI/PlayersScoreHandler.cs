@@ -26,6 +26,7 @@ public class PlayersScoreHandler : MonoBehaviour
     {
         m_P1Name = player1Name;
         m_P2Name = player2Name;
+        Debug.Log($"Player1 name = {player1Name}, Player2 name = {player2Name}");
     }
 
     private void UpdateDisplay() 
@@ -44,5 +45,15 @@ public class PlayersScoreHandler : MonoBehaviour
     {
         m_P2Score = score;
         UpdateDisplay();
+    }
+
+    public void UpdatePlayer1Name(string name)
+    {
+        m_P1Name = name;
+    }
+
+    public void UpdatePlayer2Name(string name)
+    {
+        m_P2Name = name;
     }
 }

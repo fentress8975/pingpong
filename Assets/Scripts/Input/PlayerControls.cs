@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -13,6 +14,14 @@ public class PlayerControls : MonoBehaviour
 
     private bool m_IsMovingUp = false;
     private bool m_IsMovingDown = false;
+
+    private enum BarState
+    {
+        Active,
+        Stuned
+    }
+
+    private BarState m_State = BarState.Active;
 
     private void Start()
     {
@@ -90,9 +99,57 @@ public class PlayerControls : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        //if (other.gameObject.TryGetComponent(out Border border))
+        //{
+        //    Debug.Log("Border collide");
+        //    if (border.gameObject.transform.eulerAngles.y == 180)
+        //    {
+        //        transform.position += Vector3.back;
+        //    }
+        //    if (border.gameObject.transform.eulerAngles.y == 0)
+        //    {
+        //        transform.position += Vector3.forward;
+        //    }
+        //}
+        if (other.gameObject.TryGetComponent(out Border border))
+        {
+            Debug.Log($"{gameObject.name} stunned");
+            m_State = BarState.Stuned;
+            StartCoroutine(StunBar());
+        }
+    }
+
+    private IEnumerator StunBar()
+    {
+        Vector3 destination = m_Direction == BarMovementDirection.UP ? transform.position + Vector3.back : transform.position + Vector3.forward;
+        float current = 0;
+        float target = 1;
+        while (current != target)
+        {
+            current = Mathf.MoveTowards(current, target, m_fSpeed * 0.1f * Time.deltaTime);
+            transform.position = Vector3.Lerp(transform.position, destination, current);
+            yield return null;
+        }
+        Debug.Log($"{gameObject.name} Active");
+        m_State = BarState.Active;
+
+    }
+
+
     private void FixedUpdate()
     {
-        Move();
+        switch (m_State)
+        {
+            case BarState.Active:
+                Move();
+                break;
+            case BarState.Stuned:
+
+                break;
+        }
+
     }
 }
 
