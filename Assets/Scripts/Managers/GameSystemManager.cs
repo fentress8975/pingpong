@@ -1,13 +1,14 @@
 using GameSystems.Scene;
 using System;
+using UnityEngine;
 
 public class GameSystemManager : SingletonMonoPersistent<GameSystemManager>
 {
     private GameManager m_GameManager;
     private UIHandler m_UIHandler;
     private SceneChanger m_SceneChanger;
+    [SerializeField]
     private GameState m_GameState;
-
     public GameState gameState
     {
         get => m_GameState;
@@ -45,6 +46,7 @@ public class GameSystemManager : SingletonMonoPersistent<GameSystemManager>
         switch (m_GameState)
         {
             case GameState.MainMenu:
+                SetGamePause(false);
                 break;
             case GameState.Active:
                 SetGamePause(false);

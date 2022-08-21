@@ -127,14 +127,16 @@ public class UIHandler : SingletonMonoPersistent<UIHandler>
 
         m_MenuCanvas = Instantiate(m_PrefabMenuPanel);
         m_MainMenu = m_MenuCanvas.GetComponentInChildren<MainMenu>();
-        m_ListActiveUi.Add(m_MenuCanvas);
-
 
         m_MainMenu.OnStartGameEvent.AddListener(StartGame);
         m_MainMenu.OnUpdatePlayer1Name.AddListener(SetPlayer1Name);
         m_MainMenu.OnUpdatePlayer2Name.AddListener(SetPlayer2Name);
+
         m_Player1Name = m_MainMenu.Player1Name;
         m_Player2Name = m_MainMenu.Player2Name;
+
+        m_ListActiveUi.Add(m_MenuCanvas);
+        GameSystemManager.Instance.SwitchGameState(GameState.MainMenu);
     }
 
     private void BuildGameMenu()

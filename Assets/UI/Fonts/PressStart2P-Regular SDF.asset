@@ -10,6 +10,7 @@ Material:
   m_Name: PressStart2P-Regular SDF Material
   m_Shader: {fileID: 4800000, guid: 68e6db2ebdc24f95958faec2be5558d6, type: 3}
   m_ValidKeywords:
+  - BEVEL_ON
   - GLOW_ON
   - UNDERLAY_ON
   m_InvalidKeywords: []
@@ -45,11 +46,11 @@ Material:
     m_Ints: []
     m_Floats:
     - _Ambient: 0.5
-    - _Bevel: 0.5
-    - _BevelClamp: 0
-    - _BevelOffset: 0
+    - _Bevel: 0.414
+    - _BevelClamp: 0.747
+    - _BevelOffset: -0.5
     - _BevelRoundness: 0
-    - _BevelWidth: 0
+    - _BevelWidth: 0.5
     - _BumpFace: 0
     - _BumpOutline: 0
     - _ColorMask: 15
