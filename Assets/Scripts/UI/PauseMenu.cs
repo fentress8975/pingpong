@@ -3,62 +3,65 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class PauseMenu : MonoBehaviour
+namespace UI
 {
-    public UnityEvent SwitchToMenu;
-
-    [SerializeField]
-    private Button m_ExitGame;
-    [SerializeField]
-    private Button m_BackToMenu;
-
-    private void Awake()
+    public class PauseMenu : MonoBehaviour
     {
-        m_ExitGame.onClick.AddListener(ExitGame);
-        m_BackToMenu.onClick.AddListener(SwitchSceneToMenu);
+        public UnityEvent SwitchToMenu;
 
-    }
+        [SerializeField]
+        private Button m_ExitGame;
+        [SerializeField]
+        private Button m_BackToMenu;
 
-    public void OpenPauseMenu()
-    {
-        EnablePauseMenu();
-    }
+        private void Awake()
+        {
+            m_ExitGame.onClick.AddListener(ExitGame);
+            m_BackToMenu.onClick.AddListener(SwitchSceneToMenu);
 
-    public void ClosePauseMenu()
-    {
-        DisablePauseMenu();
-    }
+        }
 
-    private void EnablePauseMenu()
-    {
-        gameObject.SetActive(true);
-        Debug.Log("PauseMenuOn");
-    }
+        public void OpenPauseMenu()
+        {
+            EnablePauseMenu();
+        }
 
-    private void DisablePauseMenu()
-    {
-        gameObject.SetActive(false);
-        Debug.Log("PauseMenuOff");
-    }
+        public void ClosePauseMenu()
+        {
+            DisablePauseMenu();
+        }
 
-    private void SwitchSceneToMenu()
-    {
-        Debug.Log("Goint To MainMenu");
-        SwitchToMenu?.Invoke();
-    }
+        private void EnablePauseMenu()
+        {
+            gameObject.SetActive(true);
+            Debug.Log("PauseMenuOn");
+        }
 
-    private void ExitGame()
-    {
+        private void DisablePauseMenu()
+        {
+            gameObject.SetActive(false);
+            Debug.Log("PauseMenuOff");
+        }
+
+        private void SwitchSceneToMenu()
+        {
+            Debug.Log("Goint To MainMenu");
+            SwitchToMenu?.Invoke();
+        }
+
+        private void ExitGame()
+        {
 #if UNITY_EDITOR
 
-        EditorApplication.ExitPlaymode();
+            EditorApplication.ExitPlaymode();
 
 #endif
 
 #if UNITY_STANDALONE
 
-        Application.Quit();
+            Application.Quit();
 
 #endif
+        }
     }
 }

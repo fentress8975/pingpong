@@ -100,6 +100,8 @@ GameObject:
   - component: {fileID: 416824260526449781}
   - component: {fileID: 9020584083918094713}
   - component: {fileID: 6904739431506181559}
+  - component: {fileID: 402540089785068158}
+  - component: {fileID: 806054655274572089}
   m_Layer: 5
   m_Name: MainMenu
   m_TagString: Untagged
@@ -172,6 +174,43 @@ MonoBehaviour:
   m_CloseAppButton: {fileID: 2771073832696848650}
   m_OptionsMenu: {fileID: 8101735388406417614}
   m_FaceMenu: {fileID: 4836728745132801044}
+--- !u!114 &402540089785068158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5908998370738735370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c476c711a4ee364781d1e8ed66c0793, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OptionsAnimator: {fileID: 806054655274572089}
+  m_SwapSettingsButton: {fileID: 2687941723274301190}
+  m_GoBackButton: {fileID: 8101735388620467573}
+  m_OptionsButton: {fileID: 3325557405398224983}
+  m_State: 0
+--- !u!95 &806054655274572089
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5908998370738735370}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 2d9f17f3d66a87246822713ffa457b9c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &9042337742907073594
 GameObject:
   m_ObjectHideFlags: 0
@@ -361,6 +400,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1774064635500757396, guid: f9e17abe9815cb14b8a64f03ea113d5c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1774064635500757396, guid: f9e17abe9815cb14b8a64f03ea113d5c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1774064635500757396, guid: f9e17abe9815cb14b8a64f03ea113d5c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 402540089785068158}
+    - target: {fileID: 1774064635500757396, guid: f9e17abe9815cb14b8a64f03ea113d5c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1774064635500757396, guid: f9e17abe9815cb14b8a64f03ea113d5c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: FirstTimeOpen
+      objectReference: {fileID: 0}
+    - target: {fileID: 1774064635500757396, guid: f9e17abe9815cb14b8a64f03ea113d5c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: OptionsAnimatorHandler, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1774064635500757396, guid: f9e17abe9815cb14b8a64f03ea113d5c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 8478023683627740631, guid: f9e17abe9815cb14b8a64f03ea113d5c, type: 3}
       propertyPath: m_Name
       value: Face
@@ -535,6 +602,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4202463537955680255, guid: bbe2df5db6c735e4ba0d11021d393bdd, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4742971122327062125, guid: bbe2df5db6c735e4ba0d11021d393bdd, type: 3}
       propertyPath: m_CharacterLimit
       value: 10
@@ -566,6 +637,10 @@ PrefabInstance:
     - target: {fileID: 4742971122327062125, guid: bbe2df5db6c735e4ba0d11021d393bdd, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 4791603353022939300, guid: bbe2df5db6c735e4ba0d11021d393bdd, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5922005723727929929, guid: bbe2df5db6c735e4ba0d11021d393bdd, type: 3}
       propertyPath: m_CharacterLimit
@@ -599,6 +674,14 @@ PrefabInstance:
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 8290097726009429767, guid: bbe2df5db6c735e4ba0d11021d393bdd, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9072322568797395790, guid: bbe2df5db6c735e4ba0d11021d393bdd, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bbe2df5db6c735e4ba0d11021d393bdd, type: 3}
 --- !u!114 &2431603312764149606 stripped
@@ -610,6 +693,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2da0c512f12947e489f739169773d7ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2687941723274301190 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4981506268518848013, guid: bbe2df5db6c735e4ba0d11021d393bdd, type: 3}
+  m_PrefabInstance: {fileID: 6948105687239350539}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &3621898621137976130 stripped

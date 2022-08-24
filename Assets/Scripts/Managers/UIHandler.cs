@@ -1,6 +1,7 @@
 using GameSystems.Scene;
 using System;
 using System.Collections.Generic;
+using UI;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -16,9 +17,11 @@ public class UIHandler : SingletonMonoPersistent<UIHandler>
 
     private GameObject m_GameUICanvas;
     private GameObject m_MenuCanvas;
+
     private PauseMenu m_GamePausePanel;
     private MainMenu m_MainMenu;
     private PlayersScoreHandler m_ScoreHandler;
+    private VictoryPanel m_VictoryPanel;
 
     private string m_Player1Name;
     private string m_Player2Name;
@@ -46,10 +49,45 @@ public class UIHandler : SingletonMonoPersistent<UIHandler>
 
     }
 
-    private void StartGame(MultiplayerMode mpMode, string levelName)
+    public void ShowVictoryPanel(BorderTeam team)
+    {
+        if(CheckForState(StateUI.Game))
+        {
+            m_VictoryPanel.gameObject.SetActive(true);
+            switch (team)
+            {
+                case BorderTeam.player1:
+                    m_VictoryPanel.ShowVictoryScreen(m_Player1Name);
+                    break;
+                case BorderTeam.player2:
+                    m_VictoryPanel.ShowVictoryScreen(m_Player2Name);
+                    break;
+            }
+        }
+        else
+        {
+            throw new Exception("You cannot show Victory Screen in MainMenu!");
+        }
+
+    }
+
+    public void HideVictoryPanel()
+    {
+        m_VictoryPanel.gameObject.SetActive(false);
+    }
+
+    private void StartGame(MultiplayerMode mpMode, string levelName, GameSettings gameSettings)
     {
         Debug.Log("Ui want Start Game");
-        GameManager.Instance.ChangeGameLevel(mpMode, levelName);
+        GameManager.Instance.StartGameLevel(mpMode, levelName, gameSettings);
+    }
+
+    private void RematchGame()
+    {
+        Debug.Log("Ui want Rematch Game");
+        HideVictoryPanel();
+        m_ScoreHandler.ResetScore();
+        GameManager.Instance.RematchGame();
     }
 
     private void BuildUI()
@@ -124,32 +162,58 @@ public class UIHandler : SingletonMonoPersistent<UIHandler>
     private void BuildMainMenu()
     {
         Debug.Log("UI Build MainMenu");
+        BuildMainMenuUI();
+        SubcribeOnNameChanges();
 
-        m_MenuCanvas = Instantiate(m_PrefabMenuPanel);
-        m_MainMenu = m_MenuCanvas.GetComponentInChildren<MainMenu>();
-
-        m_MainMenu.OnStartGameEvent.AddListener(StartGame);
-        m_MainMenu.OnUpdatePlayer1Name.AddListener(SetPlayer1Name);
-        m_MainMenu.OnUpdatePlayer2Name.AddListener(SetPlayer2Name);
-
-        m_Player1Name = m_MainMenu.Player1Name;
-        m_Player2Name = m_MainMenu.Player2Name;
+        SetPlayer1Name(m_MainMenu.Player1Name);
+        SetPlayer2Name(m_MainMenu.Player2Name);
 
         m_ListActiveUi.Add(m_MenuCanvas);
         GameSystemManager.Instance.SwitchGameState(GameState.MainMenu);
+
+        void SubcribeOnNameChanges()
+        {
+            m_MainMenu.OnStartGameEvent.AddListener(StartGame);
+            m_MainMenu.OnUpdatePlayer1Name.AddListener(SetPlayer1Name);
+            m_MainMenu.OnUpdatePlayer2Name.AddListener(SetPlayer2Name);
+        }
+
+        void BuildMainMenuUI()
+        {
+            m_MenuCanvas = Instantiate(m_PrefabMenuPanel);
+            m_MainMenu = m_MenuCanvas.GetComponentInChildren<MainMenu>();
+        }
     }
 
     private void BuildGameMenu()
     {
-        m_GameUICanvas = Instantiate(m_PrefabGameUI);
-        m_GamePausePanel = m_GameUICanvas.GetComponentInChildren<PauseMenu>();
-        m_GamePausePanel.SwitchToMenu.AddListener(OpenMainMenu);
-
-        m_ScoreHandler = m_GameUICanvas.GetComponentInChildren<PlayersScoreHandler>();
-        m_ScoreHandler.gameObject.SetActive(true);
-        m_ScoreHandler.Init(m_Player1Name, m_Player2Name);
+        BuildGameUI();
+        BuildScorePanel();
+        BuildVictoryPanel();
 
         m_ListActiveUi.Add(m_GameUICanvas);
+
+        void BuildVictoryPanel()
+        {
+            m_VictoryPanel = m_GameUICanvas.GetComponentInChildren<VictoryPanel>();
+            m_VictoryPanel.OnSwitchToMainMenu.AddListener(OpenMainMenu);
+            m_VictoryPanel.OnRematch.AddListener(RematchGame);
+            m_VictoryPanel.gameObject.SetActive(false);
+        }
+
+        void BuildScorePanel()
+        {
+            m_ScoreHandler = m_GameUICanvas.GetComponentInChildren<PlayersScoreHandler>();
+            m_ScoreHandler.gameObject.SetActive(true);
+            m_ScoreHandler.Init(m_Player1Name, m_Player2Name);
+        }
+
+        void BuildGameUI()
+        {
+            m_GameUICanvas = Instantiate(m_PrefabGameUI);
+            m_GamePausePanel = m_GameUICanvas.GetComponentInChildren<PauseMenu>();
+            m_GamePausePanel.SwitchToMenu.AddListener(OpenMainMenu);
+        }
     }
 
     private void OpenMainMenu()
@@ -175,7 +239,6 @@ public class UIHandler : SingletonMonoPersistent<UIHandler>
                 break;
             case StateUI.MainMenu:
                 throw new NotImplementedException($"Not Allowed Open Game Pause Menu in {m_StateUI} state!");
-                break;
         }
     }
 
@@ -197,6 +260,11 @@ public class UIHandler : SingletonMonoPersistent<UIHandler>
     private void SetPlayer2Name(string name)
     {
         m_Player2Name = name;
+    }
+
+    private bool CheckForState(StateUI state)
+    {
+        return state == StateUI.Game;
     }
 
     public enum StateUI

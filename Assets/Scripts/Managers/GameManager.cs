@@ -2,10 +2,10 @@ using GameSystems.Scene;
 using System;
 using UnityEngine;
 
+
 public class GameManager : SingletonMonoPersistent<GameManager>
 {
     private Action m_StartGame;
-
 
     private Ball m_Ball;
     private PlayerNet m_NetP1;
@@ -15,13 +15,18 @@ public class GameManager : SingletonMonoPersistent<GameManager>
     private int m_scoreP2;
 
     private PlayerControls m_Player1;
+    private string m_Player1Name;
     private PlayerControls m_Player2;
+    private string m_Player2Name;
     private HotSeatControllesSetup m_HotSeatControls;
+
+    private GameSettings m_GameSettings;
+    private int m_PoitnsToWin;
 
     [SerializeField]
     private UIHandler m_UIHandler;
 
-    private MultiplayerMode m_MultiplayerMode;
+    private UI.MultiplayerMode m_MultiplayerMode;
 
     public void Start()
     {
@@ -29,20 +34,34 @@ public class GameManager : SingletonMonoPersistent<GameManager>
         m_UIHandler.OnControlsRebinding.AddListener(SetActiveControls);
     }
 
-    public void ChangeGameLevel(MultiplayerMode mpMode, string level)
+    public void StartGameLevel(UI.MultiplayerMode mpMode, string level, GameSettings gameSettings)
     {
         m_MultiplayerMode = mpMode;
+        m_GameSettings = gameSettings;
         LoadGameLevel(level);
+    }
+
+    public void RematchGame()
+    {
+        ResetPlayerPoints();
+        RestartBall();
+
+    }
+
+    private void ResetPlayerPoints()
+    {
+        m_scoreP1 = 0;
+        m_scoreP2 = 0;
     }
 
     private void SetupGame()
     {
         switch (m_MultiplayerMode)
         {
-            case MultiplayerMode.HOTSEAT:
+            case UI.MultiplayerMode.HOTSEAT:
                 SetupHotSeat();
                 break;
-            case MultiplayerMode.Online:
+            case UI.MultiplayerMode.Online:
                 break;
             default:
                 break;
@@ -61,6 +80,7 @@ public class GameManager : SingletonMonoPersistent<GameManager>
         Debug.Log("Начало загрузки");
         StartCoroutine(SceneChanger.Instance.ChangeScene(level, m_StartGame));
     }
+
 
     private void PauseGame()
     {
@@ -100,13 +120,19 @@ public class GameManager : SingletonMonoPersistent<GameManager>
 
         m_Player1.OnOpenMenu.AddListener(PauseGame);
 
+        ReadGameSettings();
+
         GameSystemManager.Instance.SwitchGameState(GameState.Active);
+    }
+
+    private void ReadGameSettings()
+    {
+        m_Ball.ChangeBoost(m_GameSettings.BallBooster);
+        m_PoitnsToWin = m_GameSettings.PointsToWin;
     }
 
     private void ScoreGoal(BorderTeam team)
     {
-        m_Ball.Restart(Vector3.zero);
-
         switch (team)
         {
             case BorderTeam.player1:
@@ -119,6 +145,46 @@ public class GameManager : SingletonMonoPersistent<GameManager>
                 break;
             case BorderTeam.none:
                 break;
+        }
+
+        if (isFinalScore())
+        {
+            m_Ball.StopBall();
+            ShowVictoryScreen();
+        }
+        else
+        {
+            RestartBall();
+        }
+    }
+
+    private void ShowVictoryScreen()
+    {
+        if (m_scoreP1 == m_PoitnsToWin)
+        {
+            UIHandler.Instance.ShowVictoryPanel(BorderTeam.player1);
+        }
+        else
+        {
+            UIHandler.Instance.ShowVictoryPanel(BorderTeam.player2);
+        }
+
+    }
+
+    private void RestartBall()
+    {
+        m_Ball.Restart(Vector3.zero);
+    }
+
+    private bool isFinalScore()
+    {
+        if (m_scoreP1 == m_PoitnsToWin || m_scoreP2 == m_PoitnsToWin)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 

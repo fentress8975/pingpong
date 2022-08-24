@@ -1,9 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
 using System;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace UI { 
 
 public class SliderHandler : MonoBehaviour
 {
@@ -12,9 +12,9 @@ public class SliderHandler : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI m_TextMeshPro;
 
-    private int m_CurrentNumber;
+    private float m_CurrentNumber;
 
-    void Start()
+    private void Start()
     {
         m_Slider = GetComponent<Slider>();
         m_Slider.onValueChanged.AddListener(ChangeCurrentNumber);
@@ -23,7 +23,15 @@ public class SliderHandler : MonoBehaviour
 
     private void ChangeCurrentNumber(float arg0)
     {
-        m_CurrentNumber = (int)m_Slider.value;
+        if (m_Slider.wholeNumbers)
+        {
+            m_CurrentNumber = arg0;
+        }
+        else
+        {
+            m_CurrentNumber = arg0;
+            m_CurrentNumber = (float)Math.Round(m_CurrentNumber, 2);
+        }
         UpdateDislpay();
     }
 
@@ -31,4 +39,5 @@ public class SliderHandler : MonoBehaviour
     {
         m_TextMeshPro.SetText(m_CurrentNumber.ToString());
     }
+}
 }

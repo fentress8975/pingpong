@@ -6,14 +6,19 @@ public class Ball : MonoBehaviour
     private const int DirUpDown = 0;
     private const int DirLeftRight = 1;
     private const float DefaultSpeed = 5f;
-
+    private float m_BallBooster = 1.05f;
     [SerializeField]
     private float m_fSpeed = 5f;
     private Direction m_Direction;
     private Vector3 m_MovementVector;
 
 
-    // Start is called before the first frame update
+    public void ChangeBoost(float boost)
+    {
+        m_BallBooster = boost+1;
+    }
+
+
     private void Start()
     {
         StartDirection();
@@ -44,6 +49,11 @@ public class Ball : MonoBehaviour
         StartCoroutine(Pause(1.5f));
         StartDirection();
 
+    }
+
+    public void StopBall()
+    {
+        m_fSpeed = 0;
     }
 
     private IEnumerator Pause(float time)
@@ -121,7 +131,7 @@ public class Ball : MonoBehaviour
 
     private void Boost()
     {
-        m_fSpeed *= 1.05f;
+        m_fSpeed *= m_BallBooster;
     }
 
     // Update is called once per frame

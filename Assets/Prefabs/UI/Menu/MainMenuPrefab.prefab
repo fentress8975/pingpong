@@ -204,6 +204,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1396387166796715532, guid: c7b290f58bacfdf4ab621f4b7cd64eca, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2129072327758463557, guid: c7b290f58bacfdf4ab621f4b7cd64eca, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2287531271028800956, guid: c7b290f58bacfdf4ab621f4b7cd64eca, type: 3}
       propertyPath: m_text
       value: "Ping\n   Pong"
@@ -231,6 +239,10 @@ PrefabInstance:
     - target: {fileID: 2287531271028800956, guid: c7b290f58bacfdf4ab621f4b7cd64eca, type: 3}
       propertyPath: m_HorizontalAlignment
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2455465185100765615, guid: c7b290f58bacfdf4ab621f4b7cd64eca, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4195067773560816901, guid: c7b290f58bacfdf4ab621f4b7cd64eca, type: 3}
       propertyPath: m_RootOrder
@@ -263,6 +275,18 @@ PrefabInstance:
     - target: {fileID: 5908998370738735370, guid: c7b290f58bacfdf4ab621f4b7cd64eca, type: 3}
       propertyPath: m_Name
       value: MainMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 6502783471342384884, guid: c7b290f58bacfdf4ab621f4b7cd64eca, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8101735388406417613, guid: c7b290f58bacfdf4ab621f4b7cd64eca, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8101735388406417614, guid: c7b290f58bacfdf4ab621f4b7cd64eca, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c7b290f58bacfdf4ab621f4b7cd64eca, type: 3}
