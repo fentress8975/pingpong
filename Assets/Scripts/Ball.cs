@@ -6,41 +6,23 @@ public class Ball : MonoBehaviour
     private const int DirUpDown = 0;
     private const int DirLeftRight = 1;
     private const float DefaultSpeed = 5f;
+    [SerializeField]
     private float m_BallBooster = 1.05f;
     [SerializeField]
     private float m_fSpeed = 5f;
+    [SerializeField]
     private Direction m_Direction;
+    private enum Direction
+    {
+        Left,
+        Right
+    }
     private Vector3 m_MovementVector;
 
 
     public void ChangeBoost(float boost)
     {
-        m_BallBooster = boost+1;
-    }
-
-
-    private void Start()
-    {
-        StartDirection();
-
-    }
-
-    private void StartDirection()
-    {
-        int index = Random.Range(0, 2);
-        if (index == 0)
-        {
-            m_Direction = Direction.Left;
-            transform.rotation = Quaternion.Euler(new Vector3(0, Random.Range(40, 110), 0));
-
-
-        }
-        else
-        {
-            m_Direction = Direction.Right;
-            transform.rotation = Quaternion.Euler(new Vector3(0, Random.Range(-40, -110), 0));
-
-        }
+        if (boost < 1) { m_BallBooster = boost + 1; }
     }
 
     public void Restart(Vector3 startPOS)
@@ -48,12 +30,26 @@ public class Ball : MonoBehaviour
         transform.position = startPOS;
         StartCoroutine(Pause(1.5f));
         StartDirection();
-
     }
 
     public void StopBall()
     {
         m_fSpeed = 0;
+    }
+
+
+    private void StartDirection()
+    {
+        m_Direction = (Direction)Random.Range(0, 2);
+        switch (m_Direction)
+        {
+            case Direction.Left:
+                transform.rotation = Quaternion.Euler(new Vector3(0, Random.Range(-40, -110), 0));
+                break;
+            case Direction.Right:
+                transform.rotation = Quaternion.Euler(new Vector3(0, Random.Range(40, 110), 0));
+                break;
+        }
     }
 
     private IEnumerator Pause(float time)
@@ -69,64 +65,71 @@ public class Ball : MonoBehaviour
 
     }
 
-    private void CalculateAngle(in Collider collider)
+    private void CalculateAngle(in Collider collider, bool player)
     {
-        float angleTarget = collider.transform.rotation.eulerAngles.y;
-        if (angleTarget == 180 || angleTarget == 0)
+        Vector3 dirNormal = GetNormal(collider);
+        Quaternion angle = Quaternion.LookRotation(Vector3.Reflect(transform.forward, dirNormal));
+        if (player)
         {
-            //2*alpha-beta
-            float angle = gameObject.transform.rotation.eulerAngles.y;
-            angle = 90 * 2 - angle;
-            gameObject.transform.rotation = Quaternion.Euler(new Vector3(0, angle, 0));
+            PlayerAiming(in collider, ref angle);
         }
-        else if (angleTarget == 270 || angleTarget == 90)
-        {
-            SwitchDirection();
-            PlayerAiming(collider);
-        }
+        transform.rotation = angle;
+        m_Direction = CheckDirection();
         Boost();
     }
 
-    private void SwitchDirection()
+    private Vector3 GetNormal(in Collider collider)
     {
-        m_Direction = m_Direction == Direction.Left ? Direction.Right : Direction.Left;
+        Ray ray = new(transform.position, transform.forward);
+        collider.Raycast(ray, out RaycastHit hitInfo, 10f);
+        return hitInfo.normal;
     }
 
-    private void PlayerAiming(in Collider collider)
+    private Direction CheckDirection()
+    {
+        return (transform.rotation.eulerAngles.y > 0 && transform.rotation.eulerAngles.y <= 180) ? Direction.Right : Direction.Left;
+    }
+
+    private void PlayerAiming(in Collider collider, ref Quaternion angle)
     {
         Vector3 direction = transform.position - collider.transform.position;
-        transform.rotation = Quaternion.LookRotation(direction);
-        AngleSmoothing();
+        Quaternion angleCorrected = Quaternion.LookRotation(direction);
+        AngleSmoothing(ref angleCorrected);
+        angle = angleCorrected;
     }
 
-    private void AngleSmoothing()
+    private void AngleSmoothing(ref Quaternion angleQ)
     {
-        float angle = transform.rotation.eulerAngles.y;
-
+        float angle = angleQ.eulerAngles.y;
+        if (angle < 0) { angle += 360; }
         switch (m_Direction)
         {
             case Direction.Left:
                 if (angle < 40)
                 {
                     angle = 40f;
+                    Debug.Log("New mirror angle = " + angle);
                 }
                 if (angle > 160)
                 {
                     angle = 160f;
+                    Debug.Log("New mirror angle = " + angle);
                 }
                 break;
             case Direction.Right:
                 if (angle < 220)
                 {
                     angle = 220f;
+                    Debug.Log("New mirror angle = " + angle);
                 }
                 if (angle > 320)
                 {
                     angle = 320f;
+                    Debug.Log("New mirror angle = " + angle);
                 }
                 break;
         }
-        gameObject.transform.rotation = Quaternion.Euler(new Vector3(0, angle, 0));
+        angleQ = Quaternion.Euler(new Vector3(angleQ.eulerAngles.x, angle, angleQ.eulerAngles.z));
     }
 
     private void Boost()
@@ -134,21 +137,31 @@ public class Ball : MonoBehaviour
         m_fSpeed *= m_BallBooster;
     }
 
-    // Update is called once per frame
-    private void Update()
-    {
-        Move();
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log("Coll with " + other.name);
 
-        CalculateAngle(other);
+        CalculateAngle(other, isPlayer(in other));
     }
-    public enum Direction
+
+    private bool isPlayer(in Collider other)
     {
-        Left,
-        Right
+        if (other.gameObject.TryGetComponent<PlayerControls>(out PlayerControls controls))
+        {
+            Debug.Log("Collision with player!");
+            return true;
+        }
+        return false;
+    }
+
+    private void Start()
+    {
+        StartDirection();
+
+    }
+
+    private void Update()
+    {
+        Move();
     }
 }
