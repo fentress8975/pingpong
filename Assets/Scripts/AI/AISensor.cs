@@ -6,11 +6,10 @@ using UnityEngine.Events;
 public class AISensor : MonoBehaviour
 {
     public UnityEvent<Vector3> OnNewBallPosition = new OnNewBallPosition();
-    private GameObject m_SensorGO;
 
     private bool isInit = false;
 
-    public void Init(GameObject master)
+    public void Init()
     {
         if (isInit == false)
         {

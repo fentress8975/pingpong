@@ -45,6 +45,7 @@ public class SinglePlayerButton : MonoBehaviour
 
 public enum AIDificulty
 {
+    NONE,
     EASY,
     MEDIUM,
     HARD

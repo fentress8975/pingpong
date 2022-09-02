@@ -161,9 +161,9 @@ public class GameManager : SingletonMonoPersistent<GameManager>
 
     private void ReadGameSettings()
     {
-        Debug.Log(m_GameSettings.BallBooster);
-        Debug.Log(m_GameSettings.Difficulty);
-        Debug.Log(m_GameSettings.PointsToWin);
+        Debug.Log("Booster " + m_GameSettings.BallBooster);
+        Debug.Log("Difficulty "+m_GameSettings.Difficulty);
+        Debug.Log("Points to win " + m_GameSettings.PointsToWin);
         m_Ball.ChangeBoost(m_GameSettings.BallBooster);
         m_Ball.Init(m_GameSettings.Difficulty);
         m_PoitnsToWin = m_GameSettings.PointsToWin;

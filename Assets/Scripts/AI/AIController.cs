@@ -21,11 +21,12 @@ public class AIController : MonoBehaviour
 
     private void Start()
     {
-        GameObject go = Instantiate(Resources.Load<GameObject>("Prefabs/AI/Sensor"), transform);
+        GameObject go = Instantiate(Resources.Load<GameObject>("Prefabs/AI/Sensor"),transform.position,transform.rotation);
         if(go.TryGetComponent<AISensor>(out m_Sensor))
         {
-            m_Sensor.Init(gameObject);
+            m_Sensor.Init();
             m_Sensor.OnNewBallPosition.AddListener(SetNewBallPos);
+            //m_Sensor.GetComponent<Collider>().enabled = true;
         }
         else
         {
@@ -38,7 +39,7 @@ public class AIController : MonoBehaviour
     {
         if (isNewPos(pos))
         {
-            m_TargetPosZ = pos.z;
+            m_TargetPosZ = pos.z + Random.Range(-1,1);
             SetDirection();
             MoveToPosition();
         }
@@ -99,6 +100,7 @@ public class AIController : MonoBehaviour
         }
         Debug.Log($"{gameObject.name} Active");
         m_State = BarState.Active;
+        m_TargetPosZ = transform.position.z;
         MoveToPosition();
 
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 public class Ball : MonoBehaviour
 {
     private const float DefaultSpeed = 5f;
-    private const float MaxSpeed = 40f;
+    private const float MaxSpeed = 30f;
 
     [SerializeField]
     private int m_RayStep = 1;
@@ -44,7 +44,6 @@ public class Ball : MonoBehaviour
         transform.position = startPOS;
         StartCoroutine(Pause(1.5f));
         StartDirection();
-        CastRays(m_RayStep);
     }
 
     public void Restart()
@@ -52,7 +51,6 @@ public class Ball : MonoBehaviour
         transform.position = m_StartPos;
         StartCoroutine(Pause(1.5f));
         StartDirection();
-        CastRays(m_RayStep);
     }
 
     public void StopBall()
@@ -62,7 +60,7 @@ public class Ball : MonoBehaviour
 
     public void StopBall(float time)
     {
-        Pause(time);
+        StartCoroutine(Pause(time));
     }
 
 
@@ -85,6 +83,7 @@ public class Ball : MonoBehaviour
         m_fSpeed = 0;
         yield return new WaitForSeconds(time);
         m_fSpeed = DefaultSpeed;
+        CastRays();
     }
 
     private void Move()
@@ -101,11 +100,10 @@ public class Ball : MonoBehaviour
         {
             PlayerAiming(in collider, ref angle);
         }
-        AngleSmoothing(ref angle);
         m_Direction = CheckDirection();
         transform.rotation = angle;
         Boost();
-        CastRays(m_RayStep);
+        CastRays();
     }
 
     private Vector3 GetNormal(in Collider collider)
@@ -145,7 +143,6 @@ public class Ball : MonoBehaviour
     private void AngleSmoothing(ref Quaternion angleQ)
     {
         float angle = angleQ.eulerAngles.y;
-        if (angle < 0) { angle += 360; }
         switch (m_Direction)
         {
             case Direction.Left:
@@ -166,7 +163,7 @@ public class Ball : MonoBehaviour
                 }
                 break;
             case Direction.Right:
-                if (angle == 90)
+                if (angle == 270)
                 {
                     angle += Random.Range(-20f, 20f);
                 }
@@ -200,7 +197,6 @@ public class Ball : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Vector3 lel = transform.position;
         if (other.gameObject.TryGetComponent<AISensor>(out AISensor controls))
         {
             return;
@@ -208,7 +204,6 @@ public class Ball : MonoBehaviour
         if (isAI(in other) || isPlayer(in other))
         {
             CalculateAngle(other, true);
-
         }
         else
         {
@@ -235,7 +230,7 @@ public class Ball : MonoBehaviour
         return false;
     }
 
-    private void CastRays(int count)
+    private void CastRays()
     {
         //If we play HotSeat or Mp, skip raycast
         if(m_RayStep == 0)
@@ -244,7 +239,7 @@ public class Ball : MonoBehaviour
         }
         Vector3 origin = transform.position;
         Vector3 direction = transform.forward;
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < m_RayStep; i++)
         {
             if (CastRayToSensor(origin, direction, out origin, out direction))
             {
@@ -259,7 +254,7 @@ public class Ball : MonoBehaviour
         RaycastHit raycastHit;
         hitPos = Vector3.zero;
         directionToHit = Vector3.zero;
-        if (Physics.Raycast(ray, out raycastHit, Mathf.Infinity))
+        if (Physics.Raycast(ray, out raycastHit, 1000f))
         {
             if (raycastHit.collider.gameObject.TryGetComponent<AISensor>(out AISensor sensor))
             {
@@ -286,7 +281,6 @@ public class Ball : MonoBehaviour
     private void Start()
     {
         StopBall();
-        
     }
 
     private void Update()
