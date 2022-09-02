@@ -8,6 +8,8 @@ public class PlayerControls : MonoBehaviour
     public UnityEvent OnOpenMenu;
 
     private Rigidbody m_Player;
+    [SerializeField]
+    private GameObject m_StunImg;
 
     private float m_fSpeed = 6f;
     private BarMovementDirection m_Direction;
@@ -25,6 +27,7 @@ public class PlayerControls : MonoBehaviour
 
     private void Start()
     {
+        m_StunImg.SetActive(false);
         m_Player = GetComponent<Rigidbody>();
     }
 
@@ -110,6 +113,9 @@ public class PlayerControls : MonoBehaviour
 
     private IEnumerator StunBar()
     {
+        m_StunImg.SetActive(true);
+        StartCoroutine(StunAnimation());
+
         Debug.Log($"{gameObject.name} stunned");
         Vector3 destination = m_Direction == BarMovementDirection.UP ? transform.position + Vector3.back : transform.position + Vector3.forward;
         float current = 0;
@@ -123,8 +129,18 @@ public class PlayerControls : MonoBehaviour
         Debug.Log($"{gameObject.name} Active");
         m_State = BarState.Active;
 
+        StopCoroutine(StunAnimation());
+        m_StunImg.SetActive(false);
     }
 
+    private IEnumerator StunAnimation()
+    {
+        while(true)
+        {
+        m_StunImg.transform.Rotate(new Vector3(0, 0, 45));
+        yield return new WaitForSeconds(0.2f);
+        }
+    }
 
     private void FixedUpdate()
     {

@@ -1927,7 +1927,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Enter text...
+  m_text: Player1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: aacafc30155e5fd488888250575ef4f2, type: 2}
   m_sharedMaterial: {fileID: -5765928209715226295, guid: aacafc30155e5fd488888250575ef4f2, type: 2}
@@ -3170,7 +3170,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Enter text...
+  m_text: Player2
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: aacafc30155e5fd488888250575ef4f2, type: 2}
   m_sharedMaterial: {fileID: -5765928209715226295, guid: aacafc30155e5fd488888250575ef4f2, type: 2}
@@ -3778,9 +3778,7 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -100
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 8538894381120469716, guid: 612dd489448c7654191766e50655a695, type: 3}
-    - {fileID: 7006019750638452522, guid: 612dd489448c7654191766e50655a695, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 612dd489448c7654191766e50655a695, type: 3}
 --- !u!224 &4317467743770720373 stripped
 RectTransform:

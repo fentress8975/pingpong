@@ -378,7 +378,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_InputActionAsset: {fileID: -944628639613478452, guid: 1aa4596d947e8d14985366296fa66cb0, type: 3}
   m_HotSeatControls: {fileID: 4037578849594584485, guid: 5dffc2f7132dc19439028c0bd66094a0, type: 3}
-  m_SinglePlayerControls: {fileID: 3530618672459081275, guid: 7f8e5f4c8bb48d44da73bbb41e1ce8cf, type: 3}
+  m_SinglePlayerControls: {fileID: 4248142735819133862, guid: bb2e6c2c63125a3438ef5ce017a66888, type: 3}
 --- !u!1 &859691959
 GameObject:
   m_ObjectHideFlags: 0
@@ -741,7 +741,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cebddedbdfa95c42ade3f224059305e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_PlayerPrefab: {fileID: 3530618672459081275, guid: 7f8e5f4c8bb48d44da73bbb41e1ce8cf, type: 3}
   m_RedSide: {fileID: 2100000, guid: 5998c4bd93aed0441b703a88212cc3c3, type: 2}
   m_BlueSide: {fileID: 2100000, guid: 8af6f8d151b36bb47b4131650a2eab3c, type: 2}
   m_BallPrefab: {fileID: 3625969159046539163, guid: 35a578377d28df6408a974aa87b3f6b6, type: 3}
@@ -871,4 +870,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35259756e1c876e458fb4815abaf5bbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TargetFrameRate: 240
   m_GameState: 0

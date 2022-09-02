@@ -11,7 +11,7 @@ public class GameControllesSetup : MonoBehaviour
         Player1 = controls.Player1;
         Player2 = controls.Player2;
     }
-
+    
     public void SpawnPlayer(out PlayerControls Player1, out AIController Player2)
     {
         GameObject player1 = Instantiate(ControlsManager.Instance.PlayerControls);

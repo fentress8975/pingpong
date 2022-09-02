@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GameSystemManager : SingletonMonoPersistent<GameSystemManager>
 {
+    [SerializeField]
+    private int m_TargetFrameRate = 240;
     private GameManager m_GameManager;
     private UIHandler m_UIHandler;
     private SceneChanger m_SceneChanger;
@@ -20,6 +22,9 @@ public class GameSystemManager : SingletonMonoPersistent<GameSystemManager>
 
     private void Start()
     {
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = m_TargetFrameRate;
+
         m_GameManager = GetComponentInChildren<GameManager>();
         m_UIHandler = GetComponentInChildren<UIHandler>();
         m_SceneChanger = SceneChanger.Instance;

@@ -156,7 +156,7 @@ namespace UI
         {
             Debug.Log("Load player names");
             string player1Name = PlayerPrefs.GetString("Player1Name");
-            if (player1Name == null)
+            if (player1Name == null || player1Name == "")
             {
                 m_Player1Name = "Player1";
             }
@@ -165,7 +165,7 @@ namespace UI
                 m_Player1Name = player1Name;
             }
             string player2Name = PlayerPrefs.GetString("Player2Name");
-            if (player2Name == null)
+            if (player2Name == null || player2Name == "")
             {
                 m_Player2Name = "Player2";
             }
