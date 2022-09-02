@@ -87,10 +87,11 @@ namespace UI
 
         }
 
-        private void StartSingleGame(AIDificulty dificulty)
+        private void StartSingleGame(AIDificulty difficulty)
         {
-            Debug.Log("Starting SP Game");
-            OnStartGameEvent?.Invoke(MultiplayerMode.Single, m_LevelChoose.captionText.text, m_Options.GetGameSettings());
+            Debug.Log("Starting SP Game. Difficulty = " + difficulty + " " + (int)difficulty);
+            
+            OnStartGameEvent?.Invoke(MultiplayerMode.Single, m_LevelChoose.captionText.text, m_Options.GetGameSettings((int)difficulty));
         }
 
         private void StartHotSeatGame()

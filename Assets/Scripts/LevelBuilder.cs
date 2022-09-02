@@ -4,8 +4,6 @@ using UnityEngine;
 public class LevelBuilder : MonoBehaviour
 {
     [SerializeField]
-    private GameObject m_PlayerPrefab;
-    [SerializeField]
     private Material m_RedSide;
     [SerializeField]
     private Material m_BlueSide;
@@ -23,7 +21,6 @@ public class LevelBuilder : MonoBehaviour
 
     private void LoadResources()
     {
-        m_PlayerPrefab = Resources.Load<GameObject>("Prefabs/Player");
         m_RedSide = Resources.Load<Material>("Materials/Player1");
         m_BlueSide = Resources.Load<Material>("Materials/Player2");
         m_BallPrefab = Resources.Load<GameObject>("Prefabs/Ball");
@@ -77,6 +74,7 @@ public class LevelBuilder : MonoBehaviour
         GameObject BallGO = Instantiate(m_BallPrefab);
         BallGO.transform.position = m_LevelSettings.BallSpawnPos.position;
         ball = BallGO.GetComponent<Ball>();
+        ball.SetStartPos(m_LevelSettings.BallSpawnPos.position);
     }
 
     private static void SetPlayerName(GameObject player1, GameObject player2)
@@ -108,6 +106,4 @@ public class LevelBuilder : MonoBehaviour
         SetPlayerMaterials(player1, player2);
         SetPlayerPosition(player1, player2);
     }
-
-
 }

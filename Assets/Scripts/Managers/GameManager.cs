@@ -24,6 +24,7 @@ public class GameManager : SingletonMonoPersistent<GameManager>
     private GameSettings m_GameSettings;
     private LevelBuilder m_Builder;
     private int m_PoitnsToWin;
+    private int m_Difficulty;
 
     [SerializeField]
     private UIHandler m_UIHandler;
@@ -130,6 +131,7 @@ public class GameManager : SingletonMonoPersistent<GameManager>
 
         SetUpSubcripes();
         ClearBuilders();
+        ReadGameSettings();
 
         GameSystemManager.Instance.SwitchGameState(GameState.Active);
     }
@@ -144,8 +146,8 @@ public class GameManager : SingletonMonoPersistent<GameManager>
         m_Builder.BuildHotSeatlevel(m_Player1, m_Player2, out m_Ball, out m_NetP1, out m_NetP2);
 
         SetUpSubcripes();
-        ReadGameSettings();
         ClearBuilders();
+        ReadGameSettings();
 
         GameSystemManager.Instance.SwitchGameState(GameState.Active);
     }
@@ -159,7 +161,11 @@ public class GameManager : SingletonMonoPersistent<GameManager>
 
     private void ReadGameSettings()
     {
+        Debug.Log(m_GameSettings.BallBooster);
+        Debug.Log(m_GameSettings.Difficulty);
+        Debug.Log(m_GameSettings.PointsToWin);
         m_Ball.ChangeBoost(m_GameSettings.BallBooster);
+        m_Ball.Init(m_GameSettings.Difficulty);
         m_PoitnsToWin = m_GameSettings.PointsToWin;
     }
 

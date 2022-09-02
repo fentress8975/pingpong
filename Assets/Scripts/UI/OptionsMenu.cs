@@ -12,9 +12,9 @@ namespace UI
         private Slider m_BallBoosterSlider;
 
 
-        public GameSettings GetGameSettings()
+        public GameSettings GetGameSettings(int difficulty = 0)
         {
-            return new GameSettings(m_BallBoosterSlider.value, m_PointsToWinSlider.value);
+            return new GameSettings(m_BallBoosterSlider.value, m_PointsToWinSlider.value, difficulty);
 
         }
     }

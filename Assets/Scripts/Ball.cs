@@ -7,13 +7,15 @@ public class Ball : MonoBehaviour
     private const float MaxSpeed = 40f;
 
     [SerializeField]
-    private int m_RayStep = 2;
+    private int m_RayStep = 1;
     [SerializeField]
     private float m_BallBooster = 1.05f;
     [SerializeField]
     private float m_fSpeed = 5f;
     [SerializeField]
     private Direction m_Direction;
+    [SerializeField]
+    private Vector3 m_StartPos;
     private enum Direction
     {
         Left,
@@ -21,6 +23,16 @@ public class Ball : MonoBehaviour
     }
     private Vector3 m_MovementVector;
 
+    public void Init(int difficulty)
+    {
+        m_RayStep = difficulty;
+        Restart();
+    }
+
+    public void SetStartPos(Vector3 pos)
+    {
+        m_StartPos = pos;
+    }
 
     public void ChangeBoost(float boost)
     {
@@ -30,6 +42,14 @@ public class Ball : MonoBehaviour
     public void Restart(Vector3 startPOS)
     {
         transform.position = startPOS;
+        StartCoroutine(Pause(1.5f));
+        StartDirection();
+        CastRays(m_RayStep);
+    }
+
+    public void Restart()
+    {
+        transform.position = m_StartPos;
         StartCoroutine(Pause(1.5f));
         StartDirection();
         CastRays(m_RayStep);
@@ -75,16 +95,15 @@ public class Ball : MonoBehaviour
 
     private void CalculateAngle(in Collider collider, bool player)
     {
-        Debug.Log("Old angle " + transform.rotation.eulerAngles);
         Vector3 dirNormal = GetNormal(collider);
         Quaternion angle = Quaternion.LookRotation(Vector3.Reflect(transform.forward, dirNormal));
         if (player)
         {
             PlayerAiming(in collider, ref angle);
         }
-        transform.rotation = angle;
+        AngleSmoothing(ref angle);
         m_Direction = CheckDirection();
-        Debug.Log("New angle " + angle.eulerAngles);
+        transform.rotation = angle;
         Boost();
         CastRays(m_RayStep);
     }
@@ -92,22 +111,16 @@ public class Ball : MonoBehaviour
     private Vector3 GetNormal(in Collider collider)
     {
         Ray ray = new(transform.position, transform.forward);
-        Debug.DrawRay(transform.position, transform.forward * 100, Color.blue, 0.5f);
-
         if (collider.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
         {
-            Debug.Log("Name " + hitInfo.collider.name + "Normal " + hitInfo.normal);
             return hitInfo.normal;
         }
         else
         {
             Vector3 hitPos = collider.ClosestPointOnBounds(transform.position);
             ray.origin = hitPos - transform.forward;
-            Debug.Log("Correcting Ray");
-            Debug.DrawRay(transform.position, transform.forward * 1000, Color.red, 10f);
             if (collider.Raycast(ray, out hitInfo, Mathf.Infinity))
             {
-                Debug.Log("Name " + hitInfo.collider.name + "Normal " + hitInfo.normal);
                 return hitInfo.normal;
             }
         }
@@ -136,27 +149,37 @@ public class Ball : MonoBehaviour
         switch (m_Direction)
         {
             case Direction.Left:
-                if (angle < 40)
+                if (angle == 90)
                 {
-                    angle = 40f;
-                    Debug.Log("New mirror angle = " + angle);
+                    angle += Random.Range(-20f, 20f);
                 }
-                if (angle > 160)
+                else
                 {
-                    angle = 160f;
-                    Debug.Log("New mirror angle = " + angle);
+                    if (angle < 40)
+                    {
+                        angle = 40f;
+                    }
+                    if (angle > 160)
+                    {
+                        angle = 160f;
+                    }
                 }
                 break;
             case Direction.Right:
-                if (angle < 220)
+                if (angle == 90)
                 {
-                    angle = 220f;
-                    Debug.Log("New mirror angle = " + angle);
+                    angle += Random.Range(-20f, 20f);
                 }
-                if (angle > 320)
+                else
                 {
-                    angle = 320f;
-                    Debug.Log("New mirror angle = " + angle);
+                    if (angle < 220)
+                    {
+                        angle = 220f;
+                    }
+                    if (angle > 320)
+                    {
+                        angle = 320f;
+                    }
                 }
                 break;
         }
@@ -178,7 +201,6 @@ public class Ball : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         Vector3 lel = transform.position;
-        Debug.Log("Coll with " + other.name);
         if (other.gameObject.TryGetComponent<AISensor>(out AISensor controls))
         {
             return;
@@ -199,7 +221,6 @@ public class Ball : MonoBehaviour
     {
         if (other.gameObject.TryGetComponent<PlayerControls>(out PlayerControls controls))
         {
-            Debug.Log("Collision with player!");
             return true;
         }
         return false;
@@ -209,7 +230,6 @@ public class Ball : MonoBehaviour
     {
         if (other.gameObject.TryGetComponent<AIController>(out AIController controls))
         {
-            Debug.Log("Collision with AI!");
             return true;
         }
         return false;
@@ -217,6 +237,11 @@ public class Ball : MonoBehaviour
 
     private void CastRays(int count)
     {
+        //If we play HotSeat or Mp, skip raycast
+        if(m_RayStep == 0)
+        {
+            return;
+        }
         Vector3 origin = transform.position;
         Vector3 direction = transform.forward;
         for (int i = 0; i < count; i++)
@@ -238,12 +263,13 @@ public class Ball : MonoBehaviour
         {
             if (raycastHit.collider.gameObject.TryGetComponent<AISensor>(out AISensor sensor))
             {
+                Debug.DrawRay(origin, direction * 100, Color.red, 0.5f);
                 sensor.SetNewBallPos(gameObject, raycastHit.point);
-                Debug.Log("Find Sensor");
                 return true;
             }
             else
             {
+                Debug.DrawRay(origin, direction * 100, Color.blue, 0.5f);
                 Vector3 dirNormal = raycastHit.normal;
                 directionToHit = Vector3.Reflect(direction, dirNormal);
                 hitPos = raycastHit.point;
@@ -259,8 +285,8 @@ public class Ball : MonoBehaviour
 
     private void Start()
     {
-        StartDirection();
-        CastRays(m_RayStep);
+        StopBall();
+        
     }
 
     private void Update()
