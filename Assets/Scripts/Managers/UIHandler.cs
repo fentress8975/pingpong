@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 public class UIHandler : SingletonMonoPersistent<UIHandler>
 {
-    public UnityEvent<bool> OnControlsRebinding;
+    
     private Action OnSwitchSceneToMenu;
 
     [SerializeField]

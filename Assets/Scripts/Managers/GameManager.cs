@@ -17,10 +17,12 @@ public class GameManager : SingletonMonoPersistent<GameManager>
     private PlayerControls m_Player1;
     private string m_Player1Name;
     private PlayerControls m_Player2;
+    private AIController m_Player2AI;
     private string m_Player2Name;
-    private HotSeatControllesSetup m_HotSeatControls;
+    private GameControllesSetup m_GameControls;
 
     private GameSettings m_GameSettings;
+    private LevelBuilder m_Builder;
     private int m_PoitnsToWin;
 
     [SerializeField]
@@ -31,7 +33,6 @@ public class GameManager : SingletonMonoPersistent<GameManager>
     public void Start()
     {
         m_StartGame += SetupGame;
-        m_UIHandler.OnControlsRebinding.AddListener(SetActiveControls);
     }
 
     public void StartGameLevel(UI.MultiplayerMode mpMode, string level, GameSettings gameSettings)
@@ -63,6 +64,9 @@ public class GameManager : SingletonMonoPersistent<GameManager>
                 break;
             case UI.MultiplayerMode.Online:
                 break;
+            case UI.MultiplayerMode.Single:
+                SetupSinglePlayer();
+                break;
             default:
                 break;
         }
@@ -74,14 +78,11 @@ public class GameManager : SingletonMonoPersistent<GameManager>
         UpdateScore();
         m_Ball.Restart(Vector3.zero);
     }
-
     private void LoadGameLevel(string level)
     {
         Debug.Log("Начало загрузки");
         StartCoroutine(SceneChanger.Instance.ChangeScene(level, m_StartGame));
     }
-
-
     private void PauseGame()
     {
         Debug.Log("PausingGame");
@@ -94,35 +95,66 @@ public class GameManager : SingletonMonoPersistent<GameManager>
             GameSystemManager.Instance.SwitchGameState(GameState.Active);
         }
     }
-
-    private void SetupHotSeat()
+    private void PrepareLevelBuilder()
     {
-        LevelBuilder m_Builder;
         if (TryGetComponent(out m_Builder))
         {
-
         }
         else
         {
+            Debug.Log("Making New LevelBuilder");
             m_Builder = gameObject.AddComponent<LevelBuilder>();
+
         }
+    }
+    private void ClearBuilders()
+    {
+        if (m_Builder != null)
+        {
+            Destroy(GetComponent(m_Builder.GetType()));
+        }
+        if (m_GameControls != null)
+        {
+            Destroy(GetComponent(m_GameControls.GetType()));
+        }
+    }
 
-        Destroy(GetComponent<HotSeatControllesSetup>());
+    private void SetupSinglePlayer()
+    {
+        ClearBuilders();
+        PrepareLevelBuilder();
 
-        m_HotSeatControls = gameObject.AddComponent<HotSeatControllesSetup>();
-        m_HotSeatControls.SpawnPlayers(out m_Player1, out m_Player2);
-        m_Builder.BuildHotSeatlevel(m_Player1, m_Player2, out m_Ball, out m_NetP1, out m_NetP2);
+        m_GameControls = gameObject.AddComponent<GameControllesSetup>();
+        m_GameControls.SpawnPlayer(out m_Player1, out m_Player2AI);
+        m_Builder.BuildSinglePlayerlevel(m_Player1, m_Player2AI, out m_Ball, out m_NetP1, out m_NetP2);
 
-        Destroy(GetComponent(m_Builder.GetType()));
-
-        m_NetP1.GoalEvent += ScoreGoal;
-        m_NetP2.GoalEvent += ScoreGoal;
-
-        m_Player1.OnOpenMenu.AddListener(PauseGame);
-
-        ReadGameSettings();
+        SetUpSubcripes();
+        ClearBuilders();
 
         GameSystemManager.Instance.SwitchGameState(GameState.Active);
+    }
+
+    private void SetupHotSeat()
+    {
+        ClearBuilders();
+        PrepareLevelBuilder();
+
+        m_GameControls = gameObject.AddComponent<GameControllesSetup>();
+        m_GameControls.SpawnHotSeatPlayers(out m_Player1, out m_Player2);
+        m_Builder.BuildHotSeatlevel(m_Player1, m_Player2, out m_Ball, out m_NetP1, out m_NetP2);
+
+        SetUpSubcripes();
+        ReadGameSettings();
+        ClearBuilders();
+
+        GameSystemManager.Instance.SwitchGameState(GameState.Active);
+    }
+
+    private void SetUpSubcripes()
+    {
+        m_NetP1.GoalEvent += ScoreGoal;
+        m_NetP2.GoalEvent += ScoreGoal;
+        m_Player1.OnOpenMenu.AddListener(PauseGame);
     }
 
     private void ReadGameSettings()
@@ -193,14 +225,10 @@ public class GameManager : SingletonMonoPersistent<GameManager>
         m_UIHandler.UpdateScore(m_scoreP1, m_scoreP2);
     }
 
-    private void SetActiveControls(bool active)
-    {
-        Debug.Log("Controls is now " + active);
-    }
 
     private void OnDestroy()
     {
-        Destroy(m_HotSeatControls);
+
     }
 
 }

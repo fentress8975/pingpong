@@ -30,22 +30,26 @@ public class LevelBuilder : MonoBehaviour
         m_NetPrefab = Resources.Load<GameObject>("Prefabs/Net");
     }
 
-    public void BuildLevel(out PlayerControls player1, out PlayerControls player2, out Ball ball, out PlayerNet playerNet1, out PlayerNet playerNet2)
-    {
-        m_LevelSettings = FindObjectOfType<GameLevelSettings>();
-        SpawnPlayers(out player1, out player2);
-        SpawnBall(out ball);
-        SpawnNet(out playerNet1, out playerNet2);
-    }
-
     public void BuildHotSeatlevel(PlayerControls player1, PlayerControls player2, out Ball ball, out PlayerNet playerNet1, out PlayerNet playerNet2)
     {
         m_LevelSettings = FindObjectOfType<GameLevelSettings>();
-        SpawnHotSeatPlayers(player1, player2);
+        GameObject Player1 = player1.gameObject;
+        GameObject Player2 = player2.gameObject;
+        SetUpPlayers(Player1, Player2);
         SpawnBall(out ball);
         SpawnNet(out playerNet1, out playerNet2);
     }
 
+    public void BuildSinglePlayerlevel(PlayerControls player1, AIController player2, out Ball ball, out PlayerNet playerNet1, out PlayerNet playerNet2)
+    {
+        m_LevelSettings = FindObjectOfType<GameLevelSettings>();
+        GameObject Player1 = player1.gameObject;
+        GameObject Player2 = player2.gameObject;
+        SetUpPlayers(Player1, Player2);
+        SpawnBall(out ball);
+        SpawnNet(out playerNet1, out playerNet2);
+    }
+    
 
     private void SpawnNet(out PlayerNet p1Net, out PlayerNet p2Net)
     {
@@ -75,18 +79,6 @@ public class LevelBuilder : MonoBehaviour
         ball = BallGO.GetComponent<Ball>();
     }
 
-    private void SpawnPlayers(out PlayerControls p1, out PlayerControls p2)
-    {
-        GameObject player1 = Instantiate(m_PlayerPrefab);
-        GameObject player2 = Instantiate(m_PlayerPrefab);
-        SetPlayerName(player1, player2);
-        SetPlayerMaterials(player1, player2);
-        SetPlayerPosition(player1, player2);
-
-        p1 = player1.GetComponent<PlayerControls>();
-        p2 = player2.GetComponent<PlayerControls>();
-    }
-
     private static void SetPlayerName(GameObject player1, GameObject player2)
     {
         player1.name = "Player1";
@@ -110,12 +102,12 @@ public class LevelBuilder : MonoBehaviour
         meshP2.material = m_BlueSide;
     }
 
-    private void SpawnHotSeatPlayers(PlayerControls player1, PlayerControls player2)
+    private void SetUpPlayers(GameObject player1, GameObject player2)
     {
-        GameObject p1 = player1.gameObject;
-        GameObject p2 = player2.gameObject;
-        SetPlayerName(p1, p2);
-        SetPlayerMaterials(p1, p2);
-        SetPlayerPosition(p1, p2);
+        SetPlayerName(player1, player2);
+        SetPlayerMaterials(player1, player2);
+        SetPlayerPosition(player1, player2);
     }
+
+
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,9 +11,11 @@ namespace UI
         [SerializeField]
         private Button m_StartButton;
         [SerializeField]
+        private Button m_SPButton;
+        [SerializeField]
         private Animator m_Animator;
 
-        private enum OptionsState { disable, enable }
+        private enum OptionsState { disable, enable, difficultiesOn }
         private OptionsState m_State = OptionsState.disable;
 
         private List<Button> m_Buttons = new();
@@ -20,11 +23,29 @@ namespace UI
         private void Start()
         {
             m_StartButton.onClick.AddListener(TriggerOptions);
+            m_SPButton.onClick.AddListener(TriggerDifficultiesOptions);
 
             foreach (var go in GetComponentsInChildren<Button>(true))
             {
                 if (go == m_StartButton) continue;
                 m_Buttons.Add(go);
+            }
+        }
+
+        private void TriggerDifficultiesOptions()
+        {
+            switch (m_State)
+            {
+                case OptionsState.disable:
+                    break;
+                case OptionsState.enable:
+                    m_Animator.SetTrigger("ShowDifficulty");
+                    m_State = OptionsState.difficultiesOn;
+                    break;
+                case OptionsState.difficultiesOn:
+                    m_Animator.SetTrigger("ShowDifficulty");
+                    m_State = OptionsState.enable;
+                    break;
             }
         }
 
@@ -36,6 +57,9 @@ namespace UI
                     ShowOptions();
                     break;
                 case OptionsState.enable:
+                    StartCoroutine(HideOptions());
+                    break;
+                case OptionsState.difficultiesOn:
                     StartCoroutine(HideOptions());
                     break;
             }
@@ -53,6 +77,11 @@ namespace UI
 
         private IEnumerator HideOptions()
         {
+            if(m_State == OptionsState.difficultiesOn)
+            {
+                m_Animator.SetTrigger("ShowDifficulty");
+                yield return new WaitForSeconds(m_Animator.GetCurrentAnimatorStateInfo(0).length);
+            }
             m_Animator.SetTrigger("SetActive");
             yield return new WaitForSeconds(m_Animator.GetCurrentAnimatorStateInfo(0).length);
             foreach (var go in GetComponentsInChildren<Button>(true))
@@ -72,6 +101,9 @@ namespace UI
                     break;
                 case OptionsState.enable:
                     m_Animator.Play("Base Layer.ShowButtons", 0, 10);
+                    break;
+                case OptionsState.difficultiesOn:
+                    m_Animator.Play("Base Layer.ShowSingleButton", 0, 10);
                     break;
             }
         }

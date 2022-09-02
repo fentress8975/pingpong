@@ -128,6 +128,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ffb226c7e91243499e4746c7e432768, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnOpenMenu:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &7145401304935569092
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -157,7 +160,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 7447552298340631213}
         m_TargetAssemblyTypeName: PlayerControls, Assembly-CSharp
-        m_MethodName: OnMoveUp
+        m_MethodName: MoveUp
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -173,7 +176,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 7447552298340631213}
         m_TargetAssemblyTypeName: PlayerControls, Assembly-CSharp
-        m_MethodName: OnMoveDown
+        m_MethodName: MoveDown
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 23668932}
   - component: {fileID: 23668931}
+  - component: {fileID: 23668933}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -217,6 +218,26 @@ Transform:
   m_Father: {fileID: 1925427529}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &23668933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 23668930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 1
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
 --- !u!1 &36180823
 GameObject:
   m_ObjectHideFlags: 0
@@ -357,6 +378,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_InputActionAsset: {fileID: -944628639613478452, guid: 1aa4596d947e8d14985366296fa66cb0, type: 3}
   m_HotSeatControls: {fileID: 4037578849594584485, guid: 5dffc2f7132dc19439028c0bd66094a0, type: 3}
+  m_SinglePlayerControls: {fileID: 3530618672459081275, guid: 7f8e5f4c8bb48d44da73bbb41e1ce8cf, type: 3}
 --- !u!1 &859691959
 GameObject:
   m_ObjectHideFlags: 0
@@ -625,9 +647,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc0b68ab65545c949b16ce6c967454c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnControlsRebinding:
-    m_PersistentCalls:
-      m_Calls: []
   m_PrefabMenuPanel: {fileID: 2151908468760244355, guid: a6536303164488d4ba6ec3c5bc849719, type: 3}
   m_PrefabGameUI: {fileID: 6365973351568835176, guid: f4db1addd00deaa48a51e4d8884bf322, type: 3}
 --- !u!1 &1457319923

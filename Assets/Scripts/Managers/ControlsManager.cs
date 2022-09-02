@@ -23,9 +23,20 @@ public class ControlsManager : SingletonMonoPersistent<ControlsManager>
         }
     }
 
+    public GameObject PlayerControls
+    {
+        get => m_SinglePlayerControls;
+        private set
+        {
+            m_SinglePlayerControls = value;
+        }
+    }
+
 
     [SerializeField]
     private InputActionAsset m_InputActionAsset;
     [SerializeField]
     private GameObject m_HotSeatControls;
+    [SerializeField]
+    private GameObject m_SinglePlayerControls;
 }

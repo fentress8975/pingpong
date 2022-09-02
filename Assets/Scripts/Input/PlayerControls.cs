@@ -101,21 +101,8 @@ public class PlayerControls : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //if (other.gameObject.TryGetComponent(out Border border))
-        //{
-        //    Debug.Log("Border collide");
-        //    if (border.gameObject.transform.eulerAngles.y == 180)
-        //    {
-        //        transform.position += Vector3.back;
-        //    }
-        //    if (border.gameObject.transform.eulerAngles.y == 0)
-        //    {
-        //        transform.position += Vector3.forward;
-        //    }
-        //}
         if (other.gameObject.TryGetComponent(out Border border))
         {
-            Debug.Log($"{gameObject.name} stunned");
             m_State = BarState.Stuned;
             StartCoroutine(StunBar());
         }
@@ -123,6 +110,7 @@ public class PlayerControls : MonoBehaviour
 
     private IEnumerator StunBar()
     {
+        Debug.Log($"{gameObject.name} stunned");
         Vector3 destination = m_Direction == BarMovementDirection.UP ? transform.position + Vector3.back : transform.position + Vector3.forward;
         float current = 0;
         float target = 1;

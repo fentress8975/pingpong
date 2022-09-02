@@ -3,9 +3,11 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    private const int DirUpDown = 0;
-    private const int DirLeftRight = 1;
     private const float DefaultSpeed = 5f;
+    private const float MaxSpeed = 40f;
+
+    [SerializeField]
+    private int m_RayStep = 2;
     [SerializeField]
     private float m_BallBooster = 1.05f;
     [SerializeField]
@@ -30,11 +32,17 @@ public class Ball : MonoBehaviour
         transform.position = startPOS;
         StartCoroutine(Pause(1.5f));
         StartDirection();
+        CastRays(m_RayStep);
     }
 
     public void StopBall()
     {
         m_fSpeed = 0;
+    }
+
+    public void StopBall(float time)
+    {
+        Pause(time);
     }
 
 
@@ -67,6 +75,7 @@ public class Ball : MonoBehaviour
 
     private void CalculateAngle(in Collider collider, bool player)
     {
+        Debug.Log("Old angle " + transform.rotation.eulerAngles);
         Vector3 dirNormal = GetNormal(collider);
         Quaternion angle = Quaternion.LookRotation(Vector3.Reflect(transform.forward, dirNormal));
         if (player)
@@ -75,14 +84,36 @@ public class Ball : MonoBehaviour
         }
         transform.rotation = angle;
         m_Direction = CheckDirection();
+        Debug.Log("New angle " + angle.eulerAngles);
         Boost();
+        CastRays(m_RayStep);
     }
 
     private Vector3 GetNormal(in Collider collider)
     {
         Ray ray = new(transform.position, transform.forward);
-        collider.Raycast(ray, out RaycastHit hitInfo, 10f);
-        return hitInfo.normal;
+        Debug.DrawRay(transform.position, transform.forward * 100, Color.blue, 0.5f);
+
+        if (collider.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
+        {
+            Debug.Log("Name " + hitInfo.collider.name + "Normal " + hitInfo.normal);
+            return hitInfo.normal;
+        }
+        else
+        {
+            Vector3 hitPos = collider.ClosestPointOnBounds(transform.position);
+            ray.origin = hitPos - transform.forward;
+            Debug.Log("Correcting Ray");
+            Debug.DrawRay(transform.position, transform.forward * 1000, Color.red, 10f);
+            if (collider.Raycast(ray, out hitInfo, Mathf.Infinity))
+            {
+                Debug.Log("Name " + hitInfo.collider.name + "Normal " + hitInfo.normal);
+                return hitInfo.normal;
+            }
+        }
+        Debug.Log("GetNormal Error" + hitInfo.normal);
+        Restart(new Vector3(-10, 0, -8));
+        return Vector3.zero;
     }
 
     private Direction CheckDirection()
@@ -134,15 +165,35 @@ public class Ball : MonoBehaviour
 
     private void Boost()
     {
-        m_fSpeed *= m_BallBooster;
+        if (m_fSpeed < MaxSpeed)
+        {
+            m_fSpeed *= m_BallBooster;
+        }
+        if (m_fSpeed > MaxSpeed)
+        {
+            m_fSpeed = MaxSpeed;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        Vector3 lel = transform.position;
         Debug.Log("Coll with " + other.name);
+        if (other.gameObject.TryGetComponent<AISensor>(out AISensor controls))
+        {
+            return;
+        }
+        if (isAI(in other) || isPlayer(in other))
+        {
+            CalculateAngle(other, true);
 
-        CalculateAngle(other, isPlayer(in other));
+        }
+        else
+        {
+            CalculateAngle(other, false);
+        }
     }
+
 
     private bool isPlayer(in Collider other)
     {
@@ -154,14 +205,72 @@ public class Ball : MonoBehaviour
         return false;
     }
 
+    private bool isAI(in Collider other)
+    {
+        if (other.gameObject.TryGetComponent<AIController>(out AIController controls))
+        {
+            Debug.Log("Collision with AI!");
+            return true;
+        }
+        return false;
+    }
+
+    private void CastRays(int count)
+    {
+        Vector3 origin = transform.position;
+        Vector3 direction = transform.forward;
+        for (int i = 0; i < count; i++)
+        {
+            if (CastRayToSensor(origin, direction, out origin, out direction))
+            {
+                return;
+            }
+        }
+    }
+
+    private bool CastRayToSensor(Vector3 origin, Vector3 direction, out Vector3 hitPos, out Vector3 directionToHit)
+    {
+        Ray ray = new(origin, direction);
+        RaycastHit raycastHit;
+        hitPos = Vector3.zero;
+        directionToHit = Vector3.zero;
+        if (Physics.Raycast(ray, out raycastHit, Mathf.Infinity))
+        {
+            if (raycastHit.collider.gameObject.TryGetComponent<AISensor>(out AISensor sensor))
+            {
+                sensor.SetNewBallPos(gameObject, raycastHit.point);
+                Debug.Log("Find Sensor");
+                return true;
+            }
+            else
+            {
+                Vector3 dirNormal = raycastHit.normal;
+                directionToHit = Vector3.Reflect(direction, dirNormal);
+                hitPos = raycastHit.point;
+                return false;
+            }
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+
     private void Start()
     {
         StartDirection();
-
+        CastRays(m_RayStep);
     }
 
     private void Update()
     {
         Move();
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawRay(transform.position, transform.forward * 10);
     }
 }

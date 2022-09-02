@@ -36,6 +36,8 @@ namespace UI
         [SerializeField]
         private Button m_StartMP;
         [SerializeField]
+        private SinglePlayerButton m_StartSingle;
+        [SerializeField]
         private TMP_Dropdown m_LevelChoose;
 
         [SerializeField]
@@ -63,6 +65,7 @@ namespace UI
 
         private void SubcribeButtons()
         {
+            m_StartSingle.OnClickDifficulty.AddListener(StartSingleGame);
             m_StartHotSeat.onClick.AddListener(StartHotSeatGame);
             m_StartMP.onClick.AddListener(StartOnlineGame);
             m_OpenOptionsButton.onClick.AddListener(OpenOptions);
@@ -82,6 +85,12 @@ namespace UI
             m_Player1InputField.onValueChanged.AddListener(SetPlayer1Name);
             m_Player2InputField.onValueChanged.AddListener(SetPlayer2Name);
 
+        }
+
+        private void StartSingleGame(AIDificulty dificulty)
+        {
+            Debug.Log("Starting SP Game");
+            OnStartGameEvent?.Invoke(MultiplayerMode.Single, m_LevelChoose.captionText.text, m_Options.GetGameSettings());
         }
 
         private void StartHotSeatGame()
@@ -178,6 +187,7 @@ namespace UI
 
     public enum MultiplayerMode
     {
+        Single,
         HOTSEAT,
         Online
     }
