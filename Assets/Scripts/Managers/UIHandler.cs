@@ -206,6 +206,7 @@ public class UIHandler : SingletonMonoPersistent<UIHandler>
             m_ScoreHandler = m_GameUICanvas.GetComponentInChildren<PlayersScoreHandler>();
             m_ScoreHandler.gameObject.SetActive(true);
             m_ScoreHandler.Init(m_Player1Name, m_Player2Name);
+            m_ScoreHandler.ResetScore();
         }
 
         void BuildGameUI()

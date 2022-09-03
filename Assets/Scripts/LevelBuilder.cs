@@ -94,8 +94,8 @@ public class LevelBuilder : MonoBehaviour
 
     private void SetPlayerMaterials(GameObject player1, GameObject player2)
     {
-        var meshP1 = player1.GetComponent<MeshRenderer>();
-        var meshP2 = player2.GetComponent<MeshRenderer>();
+        var meshP1 = player1.GetComponentInChildren<MeshRenderer>();
+        var meshP2 = player2.GetComponentInChildren<MeshRenderer>();
         meshP1.material = m_RedSide;
         meshP2.material = m_BlueSide;
     }

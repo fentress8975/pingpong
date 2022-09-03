@@ -7,6 +7,9 @@ public class Ball : MonoBehaviour
     private const float MaxSpeed = 30f;
 
     [SerializeField]
+    private AudioClip m_HitSound;
+    private AudioSource m_AudioSorce;
+    [SerializeField]
     private int m_RayStep = 1;
     [SerializeField]
     private float m_BallBooster = 1.05f;
@@ -89,28 +92,38 @@ public class Ball : MonoBehaviour
     private void Move()
     {
         transform.position += m_fSpeed * Time.deltaTime * transform.forward;
-
     }
 
     private void CalculateAngle(in Collider collider, bool player)
     {
-        Vector3 dirNormal = GetNormal(collider);
-        Quaternion angle = Quaternion.LookRotation(Vector3.Reflect(transform.forward, dirNormal));
+        Quaternion angle = new();
         if (player)
         {
             PlayerAiming(in collider, ref angle);
         }
-        m_Direction = CheckDirection();
-        transform.rotation = angle;
-        Boost();
-        CastRays();
+        else
+        {
+            Vector3 dirNormal = GetNormal(collider);
+            angle = Quaternion.LookRotation(Vector3.Reflect(transform.forward, dirNormal));
+        }
+        if (angle != null)
+        {
+            m_Direction = CheckDirection();
+            transform.rotation = angle;
+            Debug.DrawRay(transform.position, transform.forward * 50, Color.green, 1f);
+            Boost();
+            CastRays();
+            PlayHitSound();
+        }
     }
 
     private Vector3 GetNormal(in Collider collider)
     {
         Ray ray = new(transform.position, transform.forward);
+
         if (collider.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity))
         {
+            Debug.DrawRay(transform.position, hitInfo.normal * 100, Color.red, 1f);
             return hitInfo.normal;
         }
         else
@@ -119,6 +132,7 @@ public class Ball : MonoBehaviour
             ray.origin = hitPos - transform.forward;
             if (collider.Raycast(ray, out hitInfo, Mathf.Infinity))
             {
+                Debug.DrawRay(transform.position, hitInfo.normal * 100, Color.red, 1f);
                 return hitInfo.normal;
             }
         }
@@ -127,56 +141,50 @@ public class Ball : MonoBehaviour
         return Vector3.zero;
     }
 
+
     private Direction CheckDirection()
     {
         return (transform.rotation.eulerAngles.y > 0 && transform.rotation.eulerAngles.y <= 180) ? Direction.Right : Direction.Left;
     }
 
+    private Direction CheckDirection(Vector3 direction)
+    {
+        return (direction.y > 0 && direction.y <= 180) ? Direction.Right : Direction.Left;
+    }
+
     private void PlayerAiming(in Collider collider, ref Quaternion angle)
     {
         Vector3 direction = transform.position - collider.transform.position;
-        Quaternion angleCorrected = Quaternion.LookRotation(direction);
-        AngleSmoothing(ref angleCorrected);
-        angle = angleCorrected;
+        Debug.DrawRay(transform.position, direction * 100, Color.red, 1f);
+        angle = Quaternion.LookRotation(direction);
+        Direction targetRotation = CheckDirection(collider.gameObject.transform.rotation.eulerAngles);
+        AngleSmoothing(ref angle, targetRotation);
+
     }
 
-    private void AngleSmoothing(ref Quaternion angleQ)
+    private void AngleSmoothing(ref Quaternion angleQ, Direction dir)
     {
         float angle = angleQ.eulerAngles.y;
-        switch (m_Direction)
+        switch (dir)
         {
-            case Direction.Left:
-                if (angle == 90)
+            case Direction.Right:
+                if (angle < 40)
                 {
-                    angle += Random.Range(-20f, 20f);
+                    angle = 40f;
                 }
-                else
+                if (angle > 160)
                 {
-                    if (angle < 40)
-                    {
-                        angle = 40f;
-                    }
-                    if (angle > 160)
-                    {
-                        angle = 160f;
-                    }
+                    angle = 160f;
                 }
                 break;
-            case Direction.Right:
-                if (angle == 270)
+            case Direction.Left:
+                if (angle < 220)
                 {
-                    angle += Random.Range(-20f, 20f);
+                    angle = 220f;
                 }
-                else
+                if (angle > 320)
                 {
-                    if (angle < 220)
-                    {
-                        angle = 220f;
-                    }
-                    if (angle > 320)
-                    {
-                        angle = 320f;
-                    }
+                    angle = 320f;
                 }
                 break;
         }
@@ -197,7 +205,8 @@ public class Ball : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.TryGetComponent<AISensor>(out AISensor controls))
+
+        if (other.gameObject.TryGetComponent<AISensor>(out AISensor component))
         {
             return;
         }
@@ -214,7 +223,8 @@ public class Ball : MonoBehaviour
 
     private bool isPlayer(in Collider other)
     {
-        if (other.gameObject.TryGetComponent<PlayerControls>(out PlayerControls controls))
+        var component = other.gameObject.GetComponentInParent<PlayerControls>();
+        if (component != null)
         {
             return true;
         }
@@ -223,7 +233,8 @@ public class Ball : MonoBehaviour
 
     private bool isAI(in Collider other)
     {
-        if (other.gameObject.TryGetComponent<AIController>(out AIController controls))
+        var component = other.gameObject.GetComponentInParent<AIController>();
+        if (component != null)
         {
             return true;
         }
@@ -233,7 +244,7 @@ public class Ball : MonoBehaviour
     private void CastRays()
     {
         //If we play HotSeat or Mp, skip raycast
-        if(m_RayStep == 0)
+        if (m_RayStep == 0)
         {
             return;
         }
@@ -277,9 +288,13 @@ public class Ball : MonoBehaviour
         }
     }
 
-
+    private void PlayHitSound()
+    {
+        m_AudioSorce.PlayOneShot(m_HitSound,0.3f);
+    }
     private void Start()
     {
+        m_AudioSorce = GetComponent<AudioSource>();
         StopBall();
     }
 
