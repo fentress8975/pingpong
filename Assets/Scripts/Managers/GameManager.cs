@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class GameManager : SingletonMonoPersistent<GameManager>
 {
+    private Action m_SetupGame;
     private Action m_StartGame;
 
     private Ball m_Ball;
@@ -22,6 +23,7 @@ public class GameManager : SingletonMonoPersistent<GameManager>
     private GameControllesSetup m_GameControls;
 
     private GameSettings m_GameSettings;
+    private LevelAnimationHandler m_Animator;
     private LevelBuilder m_Builder;
     private int m_PoitnsToWin;
     private int m_Difficulty;
@@ -33,7 +35,8 @@ public class GameManager : SingletonMonoPersistent<GameManager>
 
     public void Start()
     {
-        m_StartGame += SetupGame;
+        m_SetupGame += SetupGame;
+        m_StartGame += StartGame;
     }
 
     public void StartGameLevel(UI.MultiplayerMode mpMode, string level, GameSettings gameSettings)
@@ -47,7 +50,7 @@ public class GameManager : SingletonMonoPersistent<GameManager>
     {
         ResetPlayerPoints();
         RestartBall();
-
+        StartLevelAnimation();
     }
 
     private void ResetPlayerPoints()
@@ -58,6 +61,7 @@ public class GameManager : SingletonMonoPersistent<GameManager>
 
     private void SetupGame()
     {
+        GameSystemManager.Instance.SwitchGameState(GameState.Pause);
         switch (m_MultiplayerMode)
         {
             case UI.MultiplayerMode.HOTSEAT:
@@ -71,18 +75,19 @@ public class GameManager : SingletonMonoPersistent<GameManager>
             default:
                 break;
         }
-        StartGame();
     }
 
     private void StartGame()
     {
+        ResetPlayerPoints();
         UpdateScore();
-        m_Ball.Restart(Vector3.zero);
+        SetActivePlayersControls(true);
+        m_Ball.Restart();
     }
     private void LoadGameLevel(string level)
     {
         Debug.Log("Начало загрузки");
-        StartCoroutine(SceneChanger.Instance.ChangeScene(level, m_StartGame));
+        StartCoroutine(SceneChanger.Instance.ChangeScene(level, m_SetupGame));
     }
     private void PauseGame()
     {
@@ -96,60 +101,97 @@ public class GameManager : SingletonMonoPersistent<GameManager>
             GameSystemManager.Instance.SwitchGameState(GameState.Active);
         }
     }
+    private void SetupModules()
+    {
+        PrepareLevelBuilder();
+        PrepareLevelAnimator();
+        PreparePlayerSpawner();
+    }
     private void PrepareLevelBuilder()
     {
         if (TryGetComponent(out m_Builder))
         {
-        }
-        else
-        {
-            Debug.Log("Making New LevelBuilder");
-            m_Builder = gameObject.AddComponent<LevelBuilder>();
-
-        }
-    }
-    private void ClearBuilders()
-    {
-        if (m_Builder != null)
-        {
             Destroy(GetComponent(m_Builder.GetType()));
         }
-        if (m_GameControls != null)
+        Debug.Log("Making New LevelBuilder");
+        m_Builder = gameObject.AddComponent<LevelBuilder>();
+    }
+    private void PrepareLevelAnimator()
+    {
+        if (TryGetComponent(out m_Animator))
+        {
+            Destroy(GetComponent(m_Animator.GetType()));
+            return;
+        }
+        Debug.Log("Making New LevelAnimator");
+        m_Animator = gameObject.AddComponent<LevelAnimationHandler>();
+    }
+    private void PreparePlayerSpawner()
+    {
+        if (TryGetComponent(out m_GameControls))
         {
             Destroy(GetComponent(m_GameControls.GetType()));
         }
+        Debug.Log("Making New PlayerSpawner");
+        m_GameControls = gameObject.AddComponent<GameControllesSetup>();
     }
+
 
     private void SetupSinglePlayer()
     {
-        ClearBuilders();
-        PrepareLevelBuilder();
+        SetupModules();
 
-        m_GameControls = gameObject.AddComponent<GameControllesSetup>();
         m_GameControls.SpawnPlayer(out m_Player1, out m_Player2AI);
         m_Builder.BuildSinglePlayerlevel(m_Player1, m_Player2AI, out m_Ball, out m_NetP1, out m_NetP2);
 
         SetUpSubcripes();
-        ClearBuilders();
         ReadGameSettings();
-
+        StartLevelAnimation();
         GameSystemManager.Instance.SwitchGameState(GameState.Active);
     }
 
     private void SetupHotSeat()
     {
-        ClearBuilders();
-        PrepareLevelBuilder();
+        SetupModules();
 
-        m_GameControls = gameObject.AddComponent<GameControllesSetup>();
         m_GameControls.SpawnHotSeatPlayers(out m_Player1, out m_Player2);
         m_Builder.BuildHotSeatlevel(m_Player1, m_Player2, out m_Ball, out m_NetP1, out m_NetP2);
+        SetActivePlayersControls(false);
 
         SetUpSubcripes();
-        ClearBuilders();
         ReadGameSettings();
-
+        StartLevelAnimation();
         GameSystemManager.Instance.SwitchGameState(GameState.Active);
+    }
+
+    private void SetActivePlayersControls(bool active)
+    {
+        m_Player1.enabled = active;
+        if (m_Player2)
+        {
+            m_Player2.enabled = active;
+        }
+        if (m_Player2AI)
+        {
+            m_Player2AI.enabled = active;
+        }
+    }
+
+    private void StartLevelAnimation()
+    {
+        switch (m_MultiplayerMode)
+        {
+            case UI.MultiplayerMode.Single:
+                m_Animator.StartArena(m_Player1.transform, m_Player2AI.transform, m_Ball);
+                break;
+            case UI.MultiplayerMode.HOTSEAT:
+                m_Animator.StartArena(m_Player1.transform, m_Player2.transform, m_Ball);
+                break;
+            case UI.MultiplayerMode.Online:
+                m_Animator.StartArena(m_Player1.transform, m_Player2.transform, m_Ball);
+                break;
+        }
+        
     }
 
     private void SetUpSubcripes()
@@ -157,12 +199,13 @@ public class GameManager : SingletonMonoPersistent<GameManager>
         m_NetP1.GoalEvent += ScoreGoal;
         m_NetP2.GoalEvent += ScoreGoal;
         m_Player1.OnOpenMenu.AddListener(PauseGame);
+        m_Animator.onReady.AddListener(StartGame);
     }
 
     private void ReadGameSettings()
     {
         Debug.Log("Booster " + m_GameSettings.BallBooster);
-        Debug.Log("Difficulty "+m_GameSettings.Difficulty);
+        Debug.Log("Difficulty " + m_GameSettings.Difficulty);
         Debug.Log("Points to win " + m_GameSettings.PointsToWin);
         m_Ball.ChangeBoost(m_GameSettings.BallBooster);
         m_Ball.Init(m_GameSettings.Difficulty);
@@ -211,7 +254,7 @@ public class GameManager : SingletonMonoPersistent<GameManager>
 
     private void RestartBall()
     {
-        m_Ball.Restart(Vector3.zero);
+        m_Ball.Restart();
     }
 
     private bool isFinalScore()

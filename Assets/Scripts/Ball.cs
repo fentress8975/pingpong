@@ -29,7 +29,6 @@ public class Ball : MonoBehaviour
     public void Init(int difficulty)
     {
         m_RayStep = difficulty;
-        Restart();
     }
 
     public void SetStartPos(Vector3 pos)
